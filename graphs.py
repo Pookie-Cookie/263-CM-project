@@ -17,3 +17,12 @@ plt.xlabel('year')
 plt.ylabel('pressure [MPa]')
 plt.title('pressure [MPa] from 1980-2016')
 plt.show()
+
+
+year = np.arange(1980, 2019)
+extraction = [3.15E+01,3.24E+01,3.34E+01,3.41E+01,3.29E+01,3.47E+01,3.50E+01,3.67E+01,3.76E+01,3.71E+01,3.67E+01,3.60E+01,3.52E+01,3.51E+01,3.49E+01,2.95E+01,3.23E+01,3.40E+01,3.54E+01,3.63E+01,1.84E+01,1.88E+01,1.93E+01,1.91E+01,1.95E+01,1.88E+01,1.85E+01,1.90E+01,1.91E+01,1.92E+01,1.88E+01,1.95E+01,1.84E+01,1.86E+01,1.92E+01,1.81E+01,1.91E+01,1.70E+01,1.72E+01]
+fig = plt.plot(year, extraction, 'bo', year, extraction, 'b')
+plt.xlabel('year')
+plt.ylabel('extraction [10^6 litre/day]')
+plt.title('extraction [10^6 litre/day] from 1980-2018')
+plt.show()
