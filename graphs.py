@@ -10,3 +10,10 @@ plt.title('dissovled Cu [mg/litre] from 1980-2015')
 plt.show()
 
 
+year = np.arange(1980, 2018, 2)
+pressure = [3.13E-02, 1.05E-02, -1.13E-03, -8.18E-03, -2.00E-02, -3.91E-02, -3.89E-02, -4.79E-02, -5.01E-02, -5.15E-02, -5.37E-02, -4.37E-02, -4.19E-02, -4.06E-02, -3.65E-02, -3.46E-02, -2.85E-02, -3.29E-02, -2.98E-02]
+fig = plt.plot(year, pressure, 'bo', year, pressure, 'b')
+plt.xlabel('year')
+plt.ylabel('pressure [MPa]')
+plt.title('pressure [MPa] from 1980-2016')
+plt.show()
