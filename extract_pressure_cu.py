@@ -9,7 +9,7 @@ valsPa = [3.13E-02, 1.05E-02, -1.13E-03, -8.18E-03, -2.00E-02, -3.91E-02, -3.89E
 yearEx = np.arange(1980, 2019)
 valsEx = [3.15E+01,3.24E+01,3.34E+01,3.41E+01,3.29E+01,3.47E+01,3.50E+01,3.67E+01,3.76E+01,3.71E+01,3.67E+01,3.60E+01,3.52E+01,3.51E+01,3.49E+01,2.95E+01,3.23E+01,3.40E+01,3.54E+01,3.63E+01,1.84E+01,1.88E+01,1.93E+01,1.91E+01,1.95E+01,1.88E+01,1.85E+01,1.90E+01,1.91E+01,1.92E+01,1.88E+01,1.95E+01,1.84E+01,1.86E+01,1.92E+01,1.81E+01,1.91E+01,1.70E+01,1.72E+01]
 
-f,(ax1,ax3)=plt.subplots(nrows=1,ncols=2,figsize=(10,6),constrained_layout=True)
+f,(ax1,ax3)=plt.subplots(nrows=1,ncols=2,figsize=(7,4),constrained_layout=True)
 ax2=ax1.twinx()
 ax4=ax3.twinx()
 
@@ -34,7 +34,7 @@ ax4.set_xlim([1980,2016])
 #ax3.legend(loc=4)
 #ax4.legend(loc=4)
 
-f.legend(loc="upper left", fontsize=8 ,bbox_to_anchor=(1.025,1),bbox_transform=ax1.transAxes)
+f.legend(loc="upper left", fontsize=6 ,bbox_to_anchor=(1.1,1.02),bbox_transform=ax1.transAxes)
 
 ax1.set_xlabel('time [yr]')
 ax3.set_xlabel('time [yr]')
