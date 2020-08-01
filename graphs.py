@@ -7,7 +7,7 @@ fig1 = plt.plot(year, dissolved_Cu, 'bo', year, dissolved_Cu, 'b')
 plt.xlabel('year')
 plt.ylabel('dissovled Cu [mg/litre]')
 plt.title('dissovled Cu [mg/litre] from 1980-2015')
-plt.show()
+#plt.show()
 
 
 year = np.arange(1980, 2018, 2)
@@ -16,7 +16,7 @@ fig2 = plt.plot(year, pressure, 'bo', year, pressure, 'b')
 plt.xlabel('year')
 plt.ylabel('pressure [MPa]')
 plt.title('pressure [MPa] from 1980-2016')
-plt.show()
+#plt.show()
 
 
 year = np.arange(1980, 2019)
@@ -25,7 +25,7 @@ fig3 = plt.plot(year, extraction, 'bo', year, extraction, 'b')
 plt.xlabel('year')
 plt.ylabel('extraction [10^6 litre/day]')
 plt.title('extraction [10^6 litre/day] from 1980-2018')
-plt.show()
+#plt.show()
 
 yearExtr = np.arange(1980, 2019)
 yearCu = [1980,1985,1990,1995,2000,2005,2010,2015]
@@ -41,12 +41,12 @@ plt.title('comparison of extraction rate and Cu concentration')
 
 #show the plot to the screen OR save the plot in the directory
 save_figure = True
-if not save_figure:
+'''if not save_figure:
 	#Open a new window and display the plot
 	plt.show()
 else:
 	#Save that plot to a png file
-	plt.savefig('extraction_vs_conc.png',dpi=300)
+	plt.savefig('extraction_vs_conc.png',dpi=300)'''
 
 
 yearPa = np.arange(1980,2018,2)
@@ -63,10 +63,41 @@ plt.tight_layout()
 
 #show the plot to the screen OR save the plot in the directory
 save_figure = False
+'''if not save_figure:
+	#Open a new window and display the plot
+	plt.show()
+else:
+	#Save that plot to a png file
+	plt.savefig('pressure_vs_conc.png',dpi=300)'''
+
+
+
+
+yearPa = np.arange(1980,2018,2)
+yearCu=[1980,1985,1990,1995,2000,2005,2010,2015]
+yearExtr = np.arange(1980, 2019)
+fig5, (y1, y3) = plt.subplots(1, 2)
+y1.plot(yearCu, dissolved_Cu, 'g')
+y1.set_ylabel('dissolved Cu [mg/litre]')
+y2 = y1.twinx()
+y2.plot(yearPa, pressure, '--r')
+y2.set_ylabel('pressure [MPa]')
+plt.title('comparison of pressure and Cu concentration')
+plt.tight_layout()
+
+y3.plot(yearCu, dissolved_Cu, 'r')
+y3.set_ylabel('dissolved Cu [mg/litre]')
+y4 = y3.twinx()
+y4.plot(yearExtr, extraction, 'b')
+y4.set_ylabel('extraction [$10^6$ litre/day]')
+fig5.legend(labels = ('Cu concentration', 'Cu concentration', 'pressure', 'extraction rate' ), loc=4,bbox_to_anchor=(1,0.05),bbox_transform=y1.transAxes)
+plt.title('comparison of extraction rate and Cu concentration')
+plt.xlabel('year')
+
+save_figure = False
 if not save_figure:
 	#Open a new window and display the plot
 	plt.show()
 else:
 	#Save that plot to a png file
-	plt.savefig('pressure_vs_conc.png',dpi=300)
-
+	plt.savefig('pressure_vs_conc & extraction_vs_conc.png',dpi=300)
