@@ -5,7 +5,7 @@
 from scipy.interpolate import interp1d
 from data_prep_functions import load_extraction_rates
 
-def pressure_ode(t, p, q, a, b, p0, p1,c):
+def pressure_ode(t, p, q, a, b, p0, p1):
     ''' Return the derivative dP/dt at time, t, for given parameters.
 
         Parameters:
@@ -41,17 +41,7 @@ def pressure_ode(t, p, q, a, b, p0, p1,c):
         30
 
     '''
-    tv,qv=load_extraction_rates()
-    q_splines=interp1d(tv,qv,kind='cubic')
-    
-    if (t>1980) and (t<2016):
-        dqdt=(q_splines(t+1.e-6)-q_splines(t-1.e-6))/2.e-6
-    elif t==1980:
-        dqdt=(q_splines(t+1.e-6)-q_splines(t))/1.e-6
-    elif t==2016:
-        dqdt=(q_splines(t)-q_splines(t-1.e-6))/1.e-6
-
-    return -a*q-b*(p-p0)-b*(p-p1)-c*dqdt    
+    return -a*q-b*(p-p0)-b*(p-p1)  
 
 def low_pressure_boundary(c,p,p0):
     ''' Return the copper conc in the flux at the low pressure boundary

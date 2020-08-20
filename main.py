@@ -35,8 +35,8 @@ def main():
 
     # parameter vector - initial guess of minimum location
     #theta0=np.array([0.0001,0.0001,-0.05,0.05])
-    #theta0=np.array([0.00055,0.15984,-0.04974,0.060258])
-    theta0=np.array([0.00055,0.15984,-0.04974,0.070258,0.0801])
+    theta0=np.array([0.00055,0.15984,-0.04974,0.060258])
+    #theta0=np.array([0.00055,0.15984,-0.04974,0.070258,0.0801])
     
     # compute steepest descent direction
     s0 = obj_dir(obj, theta0)
@@ -54,9 +54,9 @@ def main():
     # 4. comment the 'return' and 'plot_step' commands and move on
     
     # choose step size 
-    alpha = 0.6
+    alpha = 1.e-8
     # update parameter estimate
-    theta1 = step(theta0, s0, alpha)
+    #theta1 = step(theta0, s0, alpha)
     # plot 2: compare against lab2_instructions.pdf, Figure 2 
     #plot_step(obj, theta0, s0, theta1) 
     # exit function
@@ -72,7 +72,7 @@ def main():
     
     # Get the new Jacobian for the last parameters estimation
     # **uncomment and complete the command below**
-    s1 = obj_dir(obj,theta1)
+    #s1 = obj_dir(obj,theta1)
 
     # plot 3: compare against lab2_instructions.pdf, Figure 3 
     #plot_s1(obj, theta0, s0, theta1, s1) 
@@ -94,14 +94,14 @@ def main():
     theta_all = [theta0]
     s_all = [s0]
     # iteration control
-    N_max = 50
+    N_max = 100000
     N_it = 0
     # begin steepest descent iterations
         # exit when difference in s reaches some small amount
     while N_it < N_max:
     #while (len(s_all)<2) or (abs(s_all[-1]-s_all[-2]) < 1.e-6) :
         # uncomment line below to implement line search (TASK FIVE)
-        alpha = line_search(obj, theta_all[-1], s_all[-1])
+        #alpha = line_search(obj, theta_all[-1], s_all[-1])
         
         # update parameter vector 
         # **uncomment and complete the command below**
@@ -119,7 +119,7 @@ def main():
         theta0 = 1.*theta_next
         s0 = 1.*s_next
     
-    print('Optimum: ', round(theta_all[-1][0], 2), round(theta_all[-1][1], 2))
+    print('Optimum: ', round(theta_all[-1][0], 12), round(theta_all[-1][1], 12), round(theta_all[-1][2], 12), round(theta_all[-1][3], 12))
     print('Number of iterations needed: ', N_it)
 
     # plot 4: compare against lab2_instructions.pdf, Figure 4 

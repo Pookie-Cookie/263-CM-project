@@ -44,8 +44,11 @@ def plot_pressure_model():
     
     #p_initial=pressure_unit_convert(3.13*10**(-2))
     
+    #AD-HOC PARAMETER TESTING
     #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.00055,0.15984,-0.04974,0.060258])
-    t, p=solve_ode_pressure(pressure_ode,1980,2016,0.1,0.0313,[0.00045,0.15984,-0.04974,0.043258, 0.0001])
+    #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.00045,0.115,-0.01,0.045258])
+    t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.000472429035, 0.159837519513, -0.049742594109, 0.060255405891])
+
     #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.0001,0.0001,-0.05,0.05])
     #t,p=solve_ode_pressure(pressure_ode,1980,2016,0.1,p_initial,[a,b,p0,p1])
     

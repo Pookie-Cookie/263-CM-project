@@ -40,7 +40,7 @@ def obj_dir(obj, theta, model=None):
     s0 = obj(theta)
 
     # amount by which to increment parameter
-    dtheta = 1.e-2
+    dtheta = 1.e-8
     
     # for each parameter
     for i in range(len(theta)):
