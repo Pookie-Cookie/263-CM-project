@@ -1,6 +1,6 @@
 #Contains numerical methods for solving lpm ODES
 import numpy as np
-from data_prep_functions import load_extraction_rates,interpolate_extraction
+from data_prep_functions import load_extraction_rates,interpolate_extraction,extraction_unit_convert
 
 def solve_ode_pressure(f, t0, t1, dt, x0, pars):
     ''' Solve an ODE numerically for the Onehunga Aquifer system
@@ -47,6 +47,7 @@ def solve_ode_pressure(f, t0, t1, dt, x0, pars):
     #get values for the forcing term
     tv,qv=load_extraction_rates()
     q=interpolate_extraction(t,tv,qv)
+    q = extraction_unit_convert(q)
     #q=np.zeros(len(t))
     #q.fill(1)
 
