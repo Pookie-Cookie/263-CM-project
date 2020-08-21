@@ -12,17 +12,26 @@
 
 # import modules
 import numpy as np
+from numpy.linalg import norm
 
 
 # **this function is incomplete**
 #					 ----------
-def obj_dir(obj, theta, model=None):
+def obj_dir(obj, t0, t1, dt, x0, theta, model=None):
     """ Compute a unit vector of objective function sensitivities, dS/dtheta.
 
         Parameters
         ----------
         obj: callable
             Objective function.
+        t0 : float
+            Initial time of LPM solution.
+        t1 : float
+            Final time of LPM solution.
+        dt : float
+            Time step length.
+        x0 : float
+            Initial value of LPM solution. 
         theta: array-like
             Parameter vector at which dS/dtheta is evaluated.
         
@@ -37,7 +46,7 @@ def obj_dir(obj, theta, model=None):
     
     # compute objective function at theta
     # **uncomment and complete the command below**
-    s0 = obj(theta)
+    s0 = obj(t0, t1, dt, x0, theta)
 
     # amount by which to increment parameter
     dtheta = 1.e-8
@@ -51,14 +60,14 @@ def obj_dir(obj, theta, model=None):
         # compute objective function at incremented parameter
         # **uncomment and complete the command below**
         theta[i]+=dtheta
-        si = (obj(theta)-s0)/dtheta
+        si = (obj(t0, t1, dt, x0, theta)-s0)/dtheta
         theta[i]-=dtheta
         # compute objective function sensitivity
         # **uncomment and complete the command below**
         s[i] = si
 
-    # return sensitivity vector
-    return s
+    # return NORMALISED sensitivity vector
+    return s/norm(s)
 
 
 # **this function is incomplete**
@@ -87,14 +96,22 @@ def step(theta0, s, alpha):
     return theta1
 
 
-# this function is complete
-def line_search(obj, theta, s):
+# this function is NOT complete AT ALL
+def line_search(obj, t0, t1, dt, x0,  theta, s):
     """ Compute step length that minimizes objective function along the search direction.
 
         Parameters
         ----------
         obj : callable
             Objective function.
+        t0 : float
+            Initial time of LPM solution.
+        t1 : float
+            Final time of LPM solution.
+        dt : float
+            Time step length.
+        x0 : float
+            Initial value of LPM solution.
         theta : array-like
             Parameter vector at start of line search.
         s : array-like
@@ -108,9 +125,9 @@ def line_search(obj, theta, s):
     # initial step size
     alpha = 0.
     # objective function at start of line search
-    s0 = obj(theta)
+    s0 = obj(t0, t1, dt, x0, theta)
     # anonymous function: evaluate objective function along line, parameter is a
-    sa = lambda a: obj(theta-a*s)
+    sa = lambda a: obj(t0, t1, dt, x0, theta-a*s)
     # compute initial Jacobian: is objective function increasing along search direction?
     j = (sa(.01)-s0)/0.01
     # iteration control
@@ -137,11 +154,19 @@ from ode_functions import pressure_ode
 from data_prep_functions import load_pressures
 
 # this function is incomplete
-def pressure_obj(theta, model=None):
+def pressure_obj(t0, t1, dt, x0, theta, model=None):
     """ Evaluate pressure LPM at theta.
 
         Parameters
         ----------
+        t0 : float
+            Initial time of solution.
+        t1 : float
+            Final time of solution.
+        dt : float
+            Time step length.
+        x0 : float
+            Initial value of solution.        
         theta : array-like 
             [a, b, p0, p1] paramter space for pressure ode
         model : callable
@@ -154,7 +179,7 @@ def pressure_obj(theta, model=None):
     """
 
     #solve the model with theta's parameters
-    t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,theta)
+    t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, x0, theta)
 
     #get the measured pressures
     times, pressures=load_pressures()
@@ -165,8 +190,8 @@ def pressure_obj(theta, model=None):
         #look through both time arrays to find similar times
         for j in range(len(times)):
             if abs(times[j]-t[i])<1.e-6: #if the times are the same
-                #take the difference squared for the data point
-                r[j]=(p[i]-pressures[j])**2
+                #take the absolute difference for the data point
+                r[j]=abs(p[i]-pressures[j])
     
 
     #return the sum of residuals
