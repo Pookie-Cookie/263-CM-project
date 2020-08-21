@@ -97,7 +97,7 @@ def interpolate_extraction(t,tv,qv):
 #############################################################################################
 
 def extraction_unit_convert(q_data):
-    ''' Convert extractions data values to time-in-years units
+    ''' Convert extractions data values to mass rate units
 
         Parameters:
         -----------
@@ -107,10 +107,10 @@ def extraction_unit_convert(q_data):
         Returns:
         --------
         q : array-like
-            Vector of extraction rates in m^3/year
+            Vector of extraction rates in kg/year
     '''
-    #1000 m^3 in a megalitre
-    q=q_data*1000*365
+    #Desnity of water extracted assumed to be 997 kg/m^3 
+    q=(q_data/365)*0.997
 
     return q
 
