@@ -2,10 +2,12 @@
 
 #from ode_functions import *
 #from lpm_solving_functions import solve_ode_pressure
+import numpy as np
 from data_prep_functions import load_pressures
 from matplotlib import pyplot as plt
 from ode_functions import pressure_ode
 from lpm_solving_functions import solve_ode_pressure
+from calibration import pressure_params
 
 #############################################################################################
 #PLOTTING FUNCTIONS
@@ -39,19 +41,19 @@ def plot_pressure_model():
     
     ax.plot(t,P,'ro', label='Measured')
     
-    #plot model values
-    #t,Tmod=solve_ode_kettle(ode_model,0,1260,0.1,21,[0.0004545,0.00039,21])
+    #Values needed to solve and calibrate DE 
+    t0=1980
+    t1=2016
+    dt=1
+    p_start=0.0313
     
-    #p_initial=pressure_unit_convert(3.13*10**(-2))
-    
-    #AD-HOC PARAMETER TESTING
-    #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.00055,0.15984,-0.04974,0.060258])
-    #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.00045,0.115,-0.01,0.045258])
-    t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.000472429035, 0.159837519513, -0.049742594109, 0.060255405891])
+    theta0=np.array([0.00055,0.00055,-0.05,0.08])
+    #CALIBRATE using gradient descent
+    #good_theta=pressure_params(t0, t1, dt, p_start, theta0)
+    #t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, good_theta)
+    #t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, np.array([0.05515084, 0.02670687, 0.01719836, -0.02844045]))
+    t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, np.array([0.08493392, 0.04646894, 0.02130564, 0.02323962]))
 
-    #t, p=solve_ode_pressure(pressure_ode,1980,2016,1,0.0313,[0.0001,0.0001,-0.05,0.05])
-    #t,p=solve_ode_pressure(pressure_ode,1980,2016,0.1,p_initial,[a,b,p0,p1])
-    
     ax.plot(t,p,'b-',label='Model')
 
     #set titles of graph and axes
