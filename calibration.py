@@ -47,8 +47,7 @@ def pressure_params(t0, t1, dt, x0, theta0):
         Notes:
         ------
         Parameters are evelauted through a gradient descent method.
-        theta contains the parameters, in order : a, b, p0, p1
-        These parameters are also displayed to screen    
+        theta contains the parameters, in order : a, b, p0, p1   
     '''
     
     # compute steepest descent direction
