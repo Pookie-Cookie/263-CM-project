@@ -14,6 +14,10 @@
 import numpy as np
 from gradient_descent import obj_dir,step,line_search
 
+# for improving gradient descent through random start-point generation
+from random import seed, random
+from time import time
+
 # import pressure residual function as objective function to test
 from gradient_descent import pressure_obj as obj
 
@@ -90,25 +94,54 @@ def pressure_params(t0, t1, dt, x0, theta0):
         theta0 = 1.*theta_next
         s0 = 1.*s_next
     
-    print('Optimum: ', round(theta_all[-1][0], 12), round(theta_all[-1][1], 12), round(theta_all[-1][2], 12), round(theta_all[-1][3], 12))
+    #print('Optimum: ', round(theta_all[-1][0], 12), round(theta_all[-1][1], 12), round(theta_all[-1][2], 12), round(theta_all[-1][3], 12))
     #print('Number of iterations needed: ', N_it)
     return theta_all[-1], obj(t0, t1, dt, x0, theta_all[-1])
 
-if __name__ == "__main__":
-    #GUESS INITIAL PARAMETERS - THEN APPLY GRADIENT DESCENT
-    from random import seed, random
-    from time import time
+def rand_pressure_params(n, t0, t1, dt, x0):
+    ''' Uses randomly-generated parameters to improve accuracy of calibration
+       
+        Parameters:
+        -----------
+        n : int
+            Number of gradient descent start points to test
+        t0 : float
+            Initial time of solution.
+        t1 : float
+            Final time of solution.
+        dt : float
+            Time step length.
+        x0 : float
+            Initial value of solution.
 
+        Returns:
+        --------
+        theta_better : array-like
+            Set of parameters for which pressure lpm objective function is lowest(of the start points tested)
+        s_better : float
+            Value of objective function for these parameters
+
+        Notes:
+        ------
+        Random generation is set with a constant seed to ensure replicability
+        Random generation for parameters p0, p1 is between 0.05 and -0.05
+        and for a, b between -0.1 and 0.1. These ranges are based on data in ac_p.csv
+        and on values obtained through ad-hoc calibration.
+        n should be set to a value 40 or less to obtain parameters in a reasonable time.
+    '''
+    #keep seed const
     seed(1)
-    
-    t0=1980
-    t1=2016
-    dt=1
-    p_start=0.0313
-    theta0=np.array([0.0001,0.0001,-0.05,0.05])
-    theta_start, s_start=pressure_params(t0, t1, dt, p_start, theta0)
+    #generate first starting pt params
+    a=-0.1+random()*0.2
+    b=-0.1+random()*0.2
+    #Since pressures unlikely to be above/below +-0.05MPa
+    p0=-0.05+random()*0.1 
+    p1=-0.05+random()*0.1
 
-    for i in range(30):
+    theta0=np.array([a,b,p0,p1])
+    theta_start, s_start=pressure_params(t0, t1, dt, x0, theta0)
+
+    for i in range(n):
         a=-0.1+random()*0.2
         b=-0.1+random()*0.2
         #Since pressures unlikely to be above/below +-0.05MPa
@@ -116,11 +149,12 @@ if __name__ == "__main__":
         p1=-0.05+random()*0.1
 
         theta0=np.array([a,b,p0,p1])
-        good_theta, good_s=pressure_params(t0, t1, dt, p_start, theta0)
+        theta_better, s_better=pressure_params(t0, t1, dt, x0, theta0)
 
-        if (good_s<s_start):
-            s_start=good_s
+        if (s_better<s_start):
+            s_start=s_better
+            theta_start=theta_better
+    
+    return theta_start, s_start
 
-    print("Optimum obj value:", s_start)
-    print("Optimum theta:",good_theta)    
 

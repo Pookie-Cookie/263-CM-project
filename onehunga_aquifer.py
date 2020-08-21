@@ -7,7 +7,7 @@ from data_prep_functions import load_pressures
 from matplotlib import pyplot as plt
 from ode_functions import pressure_ode
 from lpm_solving_functions import solve_ode_pressure
-from calibration import pressure_params
+from calibration import *
 
 #############################################################################################
 #PLOTTING FUNCTIONS
@@ -42,26 +42,29 @@ def plot_pressure_model():
     ax.plot(t,P,'ro', label='Measured')
     
     #Values needed to solve and calibrate DE 
-    t0=1980
-    t1=2016
+    t0=1980 #taken from data
+    t1=2016 #taken from data
     dt=1
-    p_start=0.0313
+    p_start=0.0313 #taken from data
     
-    theta0=np.array([0.00055,0.00055,-0.05,0.08])
     #CALIBRATE using gradient descent
-    #good_theta=pressure_params(t0, t1, dt, p_start, theta0)
-    #t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, good_theta)
-    #t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, np.array([0.05515084, 0.02670687, 0.01719836, -0.02844045]))
-    t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, np.array([0.08493392, 0.04646894, 0.02130564, 0.02323962]))
+    n=20 #test a reasonable no. of starting points but not too many - otherwise too slow
+    theta_better, s_better=rand_pressure_params(n, t0, t1, dt, p_start)
 
+
+    #SOLVE using parameters from gradient descent
+    t, p=solve_ode_pressure(pressure_ode, t0, t1, dt, p_start, theta_better)
+
+    #plot model solution
     ax.plot(t,p,'b-',label='Model')
 
     #set titles of graph and axes
     ax.set_xlabel('time[s]')
     ax.set_ylabel('pressure[MPa]')
-    ax.set_title("Variation in pressure of Onehunga Aquifer")
-    ax.text(600,20,'Pressure in 1980 - $3.13\times 10^{-2}$ MPa',size=7)
+    ax.set_title("Pressure LPM calibrated using gradient descent iterating over {:d} randomly-generated start parameters $\\theta$".format(n), size=7)
+    ax.text(2005,-0.005,'LPM solution has\n the following parameters:\n $a=${:6f},\n $b=${:6f},\n $P_0$={:6f} MPa,\n $P_1$={:6f}MPa'.format(theta_better[0], theta_better[1], theta_better[2], theta_better[3]),size=7)
 
+    f.suptitle("Variation in pressure of Onehunga Aquifer")
     f.legend(loc="upper right",bbox_to_anchor=(1,1),bbox_transform=ax.transAxes)
 
     save_figure = False
