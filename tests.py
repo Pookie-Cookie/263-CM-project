@@ -67,9 +67,9 @@ def test_pressure_ode():
 
 def test_conc_ode():
     try:
-        assert(ode_functions.conc_ode(0, 1, 2, 3, 4, 5, 6) == 26.3958)
+        assert(ode_functions.conc_ode(0, 1, 2, 3, 4, 5, 6, 0, 0, 0) == 26.3958)
     except(AssertionError):
         print("conc ode not right")
 
-        
-test_conc_unit_convert()
+
+test_conc_ode()
