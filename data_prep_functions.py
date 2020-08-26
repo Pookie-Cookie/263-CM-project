@@ -64,6 +64,34 @@ def load_pressures():
 
     return t,P
 
+def load_p_lpm_solution():
+    ''' Returns time and pressure measurements for solution to pressure lpm stored in .txt file.
+
+        Parameters:
+        -----------
+        none
+
+        Returns:
+        --------
+        t : array-like
+            Vector of times (years) at which measurements were taken.
+        p : array-like
+            Vector of pressure measurements.
+
+        Notes:
+        ------
+        The file name of file containing the data is hard coded inside this function.
+        This is used to pass in the pressure solution to the concentration LPM functions
+    '''
+    
+    data=np.genfromtxt(fname="p_lpm_soln.txt",delimiter=',', skip_header=True)
+    #first col - time vals, second col - temp. vals
+    t=data[:,0]
+    p=data[:,1]
+
+    return t,p
+
+
 def load_concs():
     ''' Returns time and conc measurements from conc csv file.
 
