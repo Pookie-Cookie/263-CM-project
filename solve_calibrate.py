@@ -112,6 +112,16 @@ def conc_lpm_model(pm,tp,pressure_pars):
     f.suptitle("Comparison between copper concentration LPM and data for the Onehunga Aquifer",size=15)
     plt.show()
 
+    c = np.interp(tp, tc, c)
+    misfit = cm-c
+    f, ax = plt.subplots(1, 1)
+    ax.plot(tp, misfit, 'ko', label='misfit(Mpa)')
+    ax.plot(tp, np.zeros(np.size(tp)), 'k--', label='baseline 0')
+    ax.set_title('concentration misfit plot')
+    ax.set_ylabel('concentration misfit [Mass fraction]')
+    ax.set_xlabel('time[year]')
+    plt.show()
+
 if __name__ == "__main__":
     pm, tm, pars = pressure_lpm_model()
     conc_lpm_model(pm,tm,pars)
