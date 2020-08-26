@@ -137,23 +137,7 @@ def extraction_unit_convert(q_data):
 
     return q
 
-def pressure_unit_convert(p_data):
-    ''' Convert pressure data values to time-in-years units
 
-        Parameters:
-        -----------
-        p_data : array-like
-            Vector of pressure values in MPa
-
-        Returns:
-        --------
-        q : array-like
-            Vector of pressure in kg/m*year^2
-    '''
-    #1000 m^3 in a megalitre
-    p=p_data*10**6*(365*24*60**2)**2
-
-    return p
 
 def conc_unit_convert(c_data):
     ''' Convert copper concentration into mass fraction
