@@ -1,6 +1,7 @@
 import solve_calibrate as sc
 import data_prep_functions as dpf
 import numpy as np
+import lpm_solve as ls
 
 
 def test_extraction_unit_conversion():
@@ -53,4 +54,11 @@ def test_conc_unit_convert():
         print("data_prep_functions conc_unit_convert function not right with array inputs")
 
 
+def test_p_lpm():
+    try:
+        assert(sc.conc_lpm_model.c_lpm(0, 1, 2, 3, 4, 5)-30 < 0.001)
+        print("alg here")
+    except(AssertionError):
+        print("p_lpm isnt right")
 
+test_p_lpm()
