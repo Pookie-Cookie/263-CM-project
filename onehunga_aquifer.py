@@ -53,7 +53,7 @@ def plot_pressure_model():
     p_start=0.0313 #taken from data
     
     #CALIBRATE using gradient descent
-    n=40 #test a reasonable no. of starting points but not too many - otherwise too slow
+    n=20 #test a reasonable no. of starting points but not too many - otherwise too slow
     theta_better, s_better=rand_pressure_params(n, t0, t1, dt, p_start)
 
 
@@ -135,15 +135,19 @@ def plot_conc_model(tv, pv, theta_better):
     c_start=0.0 #taken from data
 
     #AD-HOC calibration of d, m0, csrc
-    d=30.e8
+    d=50.e8
     m0=1.e10
     csrc=2.e-6
-
+    
     #since a,b,p0,p1 are known, only need to calibrate 3 variables
     theta=np.array([a, b, p0, p1, d, m0, csrc])
-
+    theta_best=conc_params(t0, t1, dt, c_start, pv, tv, theta)
+    
+    #CALIBRATE using gradient descent
+    n=20 #test a reasonable no. of starting points but not too many - otherwise too slow
+    theta_best, s_best = rand_pressure_params(n, t0, t1, dt, x0, pv, tv, theta_better)
     #SOLVE using parameters from gradient descent
-    t, c=solve_ode_conc(conc_ode, t0, t1, dt, c_start, pv, tv, theta)
+    t, c=solve_ode_conc(conc_ode, t0, t1, dt, c_start, pv, tv, theta_best[0])
 
     #plot model solution
     ax.plot(t,c,'b-',label='Model')
@@ -167,8 +171,8 @@ def plot_conc_model(tv, pv, theta_better):
         plt.savefig('conc_model_vs_data.png',dpi=300)
 
 if __name__ == "__main__":
-    tv, pv, theta_better=plot_pressure_model()
-    '''pv=np.array([ 0.0313    ,  0.02138905,  0.01253653,  0.00458992, -0.00250368,
+    #tv, pv, theta_better=plot_pressure_model()
+    pv=np.array([ 0.0313    ,  0.02138905,  0.01253653,  0.00458992, -0.00250368,
        -0.00846848, -0.01404959, -0.01899304, -0.02366041, -0.02792519,
        -0.0315559 , -0.03465197, -0.03721989, -0.03930559, -0.04111028,
        -0.04264899, -0.04290819, -0.04369863, -0.04473243, -0.04591876,
@@ -181,7 +185,7 @@ if __name__ == "__main__":
        2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012,
        2013, 2014, 2015, 2016])
     theta_better=np.array([ 0.07875637,  0.06703037, -0.00142697,  0.00694487])
-    '''
+
     plot_conc_model(tv, pv, theta_better)
 
     print("Finished")
