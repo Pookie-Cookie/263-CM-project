@@ -38,6 +38,7 @@ def pressure_lpm_model():
     ax.set_ylabel("pressure [MPa]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
     ax.set_title('a={:2.1e},   b={:2.1e},   p0={:2.1e},  p1={:2.1e}'.format(*pars),size=14)
+    f.suptitle("Comparison between pressure LPM and data for the Onehunga Aquifer",size=15)
     plt.show()
 
     #save the solution to a file to be read 
@@ -108,6 +109,7 @@ def conc_lpm_model(pm,tp,pressure_pars):
     ax.set_ylabel("concentration [mass fraction]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
     ax.set_title('a={:2.1e},   b={:2.1e},   p0={:2.1e},  p1={:2.1e}, d={:2.1e}, m0={:2.1e}, csrc={:2.1e}'.format(*pars),size=14)
+    f.suptitle("Comparison between copper concentration LPM and data for the Onehunga Aquifer",size=15)
     plt.show()
 
 if __name__ == "__main__":
