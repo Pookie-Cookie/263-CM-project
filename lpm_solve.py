@@ -168,8 +168,9 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc):
         ------
         Based on D.Dempsey's LPM formulation for the Onehunga Aquifer.
         concentration c must be in units kg/kg i.e. a mass percentage.
-        pressure_lpm_model() MUST be run and MUST generate a csv file 
-        containing the pressure solution before this function can be used.
+        pressure_lpm_model() MUST be run and MUST generate a csv file
+        called p_lpm_soln.txt, 
+        containing the pressure solution, before this function can be used.
 
         Examples:
         ---------

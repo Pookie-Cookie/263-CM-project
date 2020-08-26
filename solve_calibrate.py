@@ -3,6 +3,26 @@ from lpm_solve import *
 from matplotlib import pyplot as plt
 
 def pressure_lpm_model():
+    ''' Solves the pressure LPM and displays solution before saving it to a csv file.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        pm : array-like
+            Vector containing solutions to pressure LPM at times tp
+        tp : array-like
+            Vector containing times for which pressure LPM is solved
+        pars : array-like
+            Vector containing parameters a,b,p0,p1 for which the LPM best fits the data
+
+        Notes
+        -----
+        Saves a csv file containing the solution and solution times to the working directory.
+        Must be called before attempting to run conc_lpm_model.
+    '''
     # load pressure data
     tp,p = load_pressures()
         
@@ -34,6 +54,28 @@ def pressure_lpm_model():
     return pm, tp, pars
 
 def conc_lpm_model(pm,tp,pressure_pars):
+    ''' Solves the conc LPM and displays solution.
+
+        Parameters
+        ----------
+        pm : array-like
+            Vector containing solutions to pressure LPM at times tp
+        tp : array-like
+            Vector containing times for which pressure LPM is solved
+        pressure_pars : array-like
+            Vector containing parameters a,b,p0,p1 for which pressure LPM best fits pressure data 
+
+        Returns
+        -------
+        None
+
+        Notes
+        -----
+        Saves a csv file containing the solution and solution times to the working directory.
+        Must call pressure_lpm_model before attempting to run.
+        Only parameters d, m0, csrc are calibrated in this function 
+        - the rest are obtained from calibrating the pressure LPM.
+    '''
     #get the calibrated pressure params
     a, b, p0, p1 = [par for par in pressure_pars]
     
