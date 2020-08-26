@@ -51,6 +51,15 @@ def pressure_lpm_model():
     #enter pressure solution data
     [fp.write('{:f}, {:f}\n'.format(t,p)) for t, p in pressure_soln]  
 
+    misfit = pm-p
+    f, ax = plt.subplots(1, 1)
+    ax.plot(tp, misfit, 'ko', label='misfit(Mpa)')
+    ax.plot(tp, np.zeros(np.size(tp)), 'k--', label='baseline 0')
+    ax.set_title('pressure misfit plot')
+    ax.set_ylabel('pressure misfit [Mpa]')
+    ax.set_xlabel('time[year]')
+    plt.show()
+
     return pm, tp, pars
 
 def conc_lpm_model(pm,tp,pressure_pars):
