@@ -1,9 +1,7 @@
-import calibration
+import solve_calibrate as sc
 import data_prep_functions as dpf
-import lpm_solving_functions as lsf
-import ode_functions
-import onehunga_aquifer
 import numpy as np
+import lpm_solve as ls
 
 
 def test_extraction_unit_conversion():
@@ -56,20 +54,11 @@ def test_conc_unit_convert():
         print("data_prep_functions conc_unit_convert function not right with array inputs")
 
 
-
-
-def test_pressure_ode():
+def test_p_lpm():
     try:
-        assert(ode_functions.pressure_ode(0, 1, 2, 3, 4, 5, 6) == 30)
+        assert(sc.conc_lpm_model.c_lpm(0, 1, 2, 3, 4, 5)-30 < 0.001)
+        print("alg here")
     except(AssertionError):
-        print("ode_functions pressure_ode function not implemented correctly")
+        print("p_lpm isnt right")
 
-
-def test_conc_ode():
-    try:
-        assert(ode_functions.conc_ode(0, 1, 2, 3, 4, 5, 6, 0, 0, 0) == 26.3958)
-    except(AssertionError):
-        print("conc ode not right")
-
-
-test_conc_ode()
+test_p_lpm()
