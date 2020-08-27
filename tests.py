@@ -40,5 +40,10 @@ def test_p_lpm():
         print("alg here")
     except(AssertionError):
         print("p_lpm isnt right")
-
-test_p_lpm()
+        
+def test_solve_p_lpm():
+    try: 
+        assert(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011 0.03129011 0.03129011 0.03129011 0.03129011] < 0.001)
+    except(AssertionError):
+        print("something wrong with the pressure ODE numerical solver")
+        
