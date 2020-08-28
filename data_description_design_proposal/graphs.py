@@ -31,14 +31,18 @@ plt.show()
 yearExtr = np.arange(1980, 2019)
 yearCu = [1980,1985,1990,1995,2000,2005,2010,2015]
 fig4, y1 = plt.subplots()
-y1.plot(yearCu, dissolved_Cu, 'ko')
-y1.set_ylabel('dissolved Cu [mg/litre]')
+#y1.plot(yearCu, dissolved_Cu, 'ko')
+#y1.set_ylabel('dissolved Cu [mg/litre]')
+
+year=np.arange(1980, 2018, 2)
+y1.plot(year, pressure, 'k--')
+y1.set_ylabel('Pressure [MPa]')
 
 y2 = y1.twinx()
 y2.plot(yearExtr, extraction, 'b')
 y2.set_ylabel('extraction [$10^6$ litre/day]')
-fig4.legend(labels = ('Cu concentration', 'extraction rate'), loc=4,bbox_to_anchor=(1,0.25),bbox_transform=y1.transAxes)
-plt.title('comparison of extraction rate and Cu concentration')
+fig4.legend(labels = ('Pressure', 'extraction rate'), loc=4,bbox_to_anchor=(1,0.45),bbox_transform=y1.transAxes)
+plt.title('Comparison of extraction rate and pressure')
 
 #show the plot to the screen OR save the plot in the directory
 save_figure = True
@@ -54,17 +58,17 @@ else:
 yearPa = np.arange(1980,2018,2)
 yearCu=[1980,1985,1990,1995,2000,2005,2010,2015]
 fig5, y1 = plt.subplots()
-y1.plot(yearCu, dissolved_Cu, 'ko')
+y1.plot(yearCu, dissolved_Cu, 'ro')
 y1.set_ylabel('dissolved Cu [mg/litre]')
 y2 = y1.twinx()
-y2.plot(yearPa, pressure, 'r')
+y2.plot(yearPa, pressure, 'k--')
 y2.set_ylabel('pressure [MPa]')
 fig5.legend(labels = ('Cu concentration', 'pressure'), loc=4,bbox_to_anchor=(1,0),bbox_transform=y1.transAxes)
-plt.title('comparison of pressure and Cu concentration')
+plt.title('Comparison of pressure and Cu concentration')
 plt.tight_layout()
 
 #show the plot to the screen OR save the plot in the directory
-save_figure = False
+save_figure = True
 if not save_figure:
 	#Open a new window and display the plot
 	plt.show()
@@ -76,10 +80,10 @@ else:
 
 #extraction vs pressure
 fig5, y1 = plt.subplots()
-y1.plot(yearExtr, extraction, 'k')
+y1.plot(yearExtr, extraction, 'k-')
 y1.set_ylabel('extraction rate [$10^6$ litre/day]')
 y2 = y1.twinx()
-y2.plot(yearPa, pressure, 'r')
+y2.plot(yearPa, pressure, 'b')
 y2.set_ylabel('pressure [MPa]')
 fig5.legend(labels = ('extraction rate', 'pressure'), loc=4,bbox_to_anchor=(1,1),bbox_transform=y1.transAxes)
 plt.xlabel('year')
