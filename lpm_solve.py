@@ -148,7 +148,7 @@ def low_p_bound(c,p,p0):
         return 0
 
 # define derivative function
-def c_lpm(c,t,a,b,p0,p1,d,m0,csrc):
+def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
     ''' Return the derivative dC/dt at time, t, for given parameters.
 
         Parameters:
@@ -189,10 +189,16 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc):
         ---------
         >>> conc_model(0, 1, 2, 3, 4, 5, 6)
         26.3958
-    '''                
-    # interpolate pressure from solution 
-    tp, pm = load_p_lpm_solution()
-    p = np.interp(t,tp,pm)           
+    '''         
+    if testing == None:       
+        # interpolate pressure from solution 
+        tp, pm = load_p_lpm_solution()
+           
+    else:
+        pm = testing[-1]
+        tp = testing[1]
+
+    p = np.interp(t,tp,pm)
     # find conc at low pressure boundary
     cprime=low_p_bound(c,p,p0)
     #find m0*dc/dt
@@ -201,7 +207,7 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc):
     return mdcdt/m0
 
 # implement an improved Euler step to solve the ODE
-def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc):
+def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None):
     ''' Solve the conc ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -237,20 +243,25 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc):
             2. independent variable
             3. other parameters
     '''
-    #load conc data - to get intial value
-    tc,c = load_concs()
-    # convert to mass fraction
-    c = conc_unit_convert(c)
-    # initial value
-    cm = [c[0],]
+    if testing == None:
+        #load conc data - to get intial value
+        tc,c = load_concs()
+        # convert to mass fraction
+        c = conc_unit_convert(c)
+    else:
+        tc = testing[1]
+        c = testing[2]
+
+    #intial value
+    cm = [c[0], ]
     # solve at conc steps                           
     for t0,t1 in zip(tc[:-1],tc[1:]):
         # predictor gradient
-        dcdt1 = c_lpm(cm[-1]-c[0], t0, a, b, p0, p1, d, m0, csrc)
+        dcdt1 = c_lpm(cm[-1], t0, a, b, p0, p1, d, m0, csrc, testing)
         # predictor step
         cp = cm[-1] + dcdt1*(t1-t0)             
         # corrector gradient
-        dcdt2 = c_lpm(cp-c[0], t1, a, b, p0, p1, d, m0, csrc)
+        dcdt2 = c_lpm(cp, t1, a, b, p0, p1, d, m0, csrc, testing)
         # corrector step
         cm.append(cm[-1] + 0.5*(t1-t0)*(dcdt2+dcdt1))
     

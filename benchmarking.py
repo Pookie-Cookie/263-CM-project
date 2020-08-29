@@ -22,12 +22,26 @@ def plot_pressure_benchmark():
 
 
 
-'''def plot_conc_benchmark():
-    y = integrate.odeint(ls.c_lpm(1, 1, 1, 1, 1, 1, 1, 1, 1), 1, np.arange(1980, 2020, 1))
-    y_numerical = ls.solve_c_lpm(np.arange(1980, 2020, 1), 1, 1, 1, 1, 1, 1, 1)
-    return '''
+def plot_conc_benchmark():
+    #analytical solution obtained via wolfram, parameters are as follows:
+    #a = 1, b = 3, P0 = 4, P1 = 5, P = 6, d = 7, Csrc = 1, C(0)=1, M0=3
+    n=100
+    t = np.linspace(0, 5, num=n)
+    analytical = 3.5-2.5*np.exp(t)
+
+    numerical = ls.solve_c_lpm(t, 1, 3, 4, 5, 7, 3, 1, testing = [True, t, [1], np.full(n, 6)])
+
+    f, ax = plt.subplots(1, 1)
+    ax.plot(t, numerical, 'k--')
+    ax.plot(t, analytical, 'b')
+    plt.show()
+    
+
+
+    
 
 
 
-
-plot_pressure_benchmark()
+if __name__ == "__main__":
+    #plot_pressure_benchmark()
+    plot_conc_benchmark()
