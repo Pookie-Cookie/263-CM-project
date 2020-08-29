@@ -37,9 +37,16 @@ def pressure_lpm_model():
     ax.plot(tp, pm, 'k-', label='model')
     ax.set_ylabel("pressure [MPa]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
-    ax.set_title('a={:2.1e},   b={:2.1e},   p0={:2.1e},  p1={:2.1e}'.format(*pars),size=14)
+    ax.set_title('a={:2.1e},   b={:2.1e},   P0={:2.1e},  P1={:2.1e}'.format(pars[0],pars[1],pars[2],pars[3]),size=14)
     f.suptitle("Comparison between pressure LPM and data for the Onehunga Aquifer",size=15)
-    plt.show()
+    
+    save_figure = False
+    if not save_figure:
+        #Open a new window and display the plot
+        plt.show()
+    else:
+        #Save that plot to a png file
+        plt.savefig('pressure_calibrate.png',dpi=300)
 
     #save the solution to a file to be read 
     #store the solution in a single array
@@ -56,10 +63,19 @@ def pressure_lpm_model():
     f, ax = plt.subplots(1, 1)
     ax.plot(tp, misfit, 'ko', label='misfit(Mpa)')
     ax.plot(tp, np.zeros(np.size(tp)), 'k--', label='baseline 0')
-    ax.set_title('pressure misfit plot')
-    ax.set_ylabel('pressure misfit [Mpa]')
+    ax.set_title('Pressure misfit plot')
+    ax.set_ylabel('pressure misfit [MPa]')
     ax.set_xlabel('time[year]')
-    plt.show()
+    plt.tight_layout()
+
+
+    save_figure = False
+    if not save_figure:
+        #Open a new window and display the plot
+        plt.show()
+    else:
+        #Save that plot to a png file
+        plt.savefig('pressure_misfit.png',dpi=300)
 
     return pm, tp, pars
 
@@ -108,19 +124,35 @@ def conc_lpm_model(pm,tp,pressure_pars):
     ax.plot(tp, cm, 'k-', label='model')
     ax.set_ylabel("concentration [mass fraction]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
-    ax.set_title('a={:2.1e},   b={:2.1e},   p0={:2.1e},  p1={:2.1e}, d={:2.1e}, m0={:2.1e}, csrc={:2.1e}'.format(*pars),size=14)
+    ax.set_title('d={:2.1e}, $M_0$={:2.1e} kg, $Csrc$={:2.1e} mg/L'.format(*pars[4:]),size=14)
+    ax.text(2003,0.0000000,'Calibrated using the following constants\n obtained from calibrating pressure LPM:\n $a=${:3.3f},\n $b=${:3.3f},\n $P_0$={:3.3f} MPa,\n $P_1$={:3.3f}MPa'.format(*pars[0:4]),size=12)
     f.suptitle("Comparison between copper concentration LPM and data for the Onehunga Aquifer",size=15)
-    plt.show()
+    
+    save_figure = False
+    if not save_figure:
+        #Open a new window and display the plot
+        plt.show()
+    else:
+        #Save that plot to a png file
+        plt.savefig('conc_calibrate.png',dpi=300)
+
 
     c = np.interp(tp, tc, c)
     misfit = cm-c
     f, ax = plt.subplots(1, 1)
-    ax.plot(tp, misfit, 'ko', label='misfit(Mpa)')
+    ax.plot(tp, misfit, 'ko', label='misfit[MPa]')
     ax.plot(tp, np.zeros(np.size(tp)), 'k--', label='baseline 0')
-    ax.set_title('concentration misfit plot')
+    ax.set_title('Concentration misfit plot')
     ax.set_ylabel('concentration misfit [Mass fraction]')
     ax.set_xlabel('time[year]')
-    plt.show()
+
+    save_figure = True
+    if not save_figure:
+        #Open a new window and display the plot
+        plt.show()
+    else:
+        #Save that plot to a png file
+        plt.savefig('conc_misfit.png',dpi=300)
 
 if __name__ == "__main__":
     pm, tm, pars = pressure_lpm_model()
