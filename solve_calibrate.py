@@ -146,7 +146,7 @@ def conc_lpm_model(pm,tp,pressure_pars):
     ax.set_ylabel('concentration misfit [Mass fraction]')
     ax.set_xlabel('time[year]')
 
-    save_figure = True
+    save_figure = False
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
