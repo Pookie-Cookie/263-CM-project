@@ -12,7 +12,7 @@ def plot_pressure_benchmark():
     t = np.linspace(0, 5, num=n)
     analytical = 25/6-19*(np.exp(-6*t))/6
 
-    numerical = ls.solve_p_lpm(t, 1, 3, 4, 3, testing = [True, t, [1], np.full(n, 2)])
+    numerical = ls.solve_p_lpm(t, 1, 3, 4, 5, testing = [True, t, [1], np.full(n, 2)])
 
     f, ax = plt.subplots(1, 1)
     ax.plot(t, numerical, 'k--')

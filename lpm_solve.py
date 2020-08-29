@@ -86,7 +86,7 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None):
             2. independent variable
             3. other parameters
     '''
-    if testing[0]:
+    if testing != None:
         tp = testing[1]
         p = testing[2]
         pm = [p[0], ]
@@ -98,12 +98,12 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None):
         # solve at pressure steps
     for t0,t1 in zip(tp[:-1],tp[1:]):          
         # predictor gradient
-        dpdt1 = p_lpm(pm[-1]-p[0], t0, a, b, p0, p1, testing = testing)
+        dpdt1 = p_lpm(pm[-1], t0, a, b, p0, p1, testing = testing)
         # predictor step
         pp = pm[-1] + dpdt1*(t1-t0)
-        # corrector gradient             
-        dpdt2 = p_lpm(pp-p[0], t1, a, b, p0, p1, testing = testing)
-        # corrector step       
+        # corrector gradient
+        dpdt2 = p_lpm(pp, t1, a, b, p0, p1, testing = testing)
+        # corrector step
         pm.append(pm[-1] + 0.5*(t1-t0)*(dpdt2+dpdt1))
     
     # interp onto requested times  
