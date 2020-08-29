@@ -1,7 +1,7 @@
 from data_prep_functions import *
 
 # define derivative function
-def p_lpm(p,t,a,b,p0,p1):
+def p_lpm(p,t,a,b,p0,p1, testing = None):
     ''' Return the derivative dP/dt at time, t, for given parameters.
 
         Parameters:
@@ -34,18 +34,20 @@ def p_lpm(p,t,a,b,p0,p1):
         >>> pressure_model(0, 1, 2, 3, 4, 5, 6)
         30
     '''            
-    
-    # load flow rate data
-    tq,qi = load_extraction_rates()
-    qi = extraction_unit_convert(qi)
+    if testing == None:
+        # load flow rate data
+        tq,qi = load_extraction_rates()
+        qi = extraction_unit_convert(qi)
+    else:
+        tq = testing[1]
+        qi = testing[-1]
     # interpolate (piecewise linear) flow rate
     q = np.interp(t,tq,qi)           
-    
     # compute derivative
     return -a*q-b*(p-p0)-b*(p-p1)
 
 # implement an imporved Euler step to solve the ODE
-def solve_p_lpm(t,a,b,p0,p1):
+def solve_p_lpm(t,a,b,p0,p1, testing = None):
     ''' Solve an ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -60,6 +62,8 @@ def solve_p_lpm(t,a,b,p0,p1):
             low pressure boundary pressure parameter.
         p1 : float
             high pressure boundary pressure parameter.   
+        testing : Bool/array like
+            whether we are testing the function or want actual outputs.
 
         Returns:
         --------
@@ -72,24 +76,33 @@ def solve_p_lpm(t,a,b,p0,p1):
         A pressure csv file called ac_p.csv MUST be present in
         the working directory for this function to run. 
 
+        Testing should at most have 3 elements in it and the first 
+        element determines if we are simply benchmarking the function or not.
+        The first element is Bool (F for not testing), then we want the 
+        testing times as an array and then the training data pressure as an array.
+
         Assume that ODE function f takes the following inputs, in order:
             1. dependent variable
             2. independent variable
             3. other parameters
     '''
-
-    # load pressure data - to get the initial value
-    tp,p = load_pressures()
-    # initial value
-    pm = [p[0],]                            
-    # solve at pressure steps
+    if testing[0]:
+        tp = testing[1]
+        p = testing[2]
+        pm = [p[0], ]
+    else:
+        # load pressure data - to get the initial value
+        tp,p = load_pressures()
+        # initial value
+        pm = [p[0],]                            
+        # solve at pressure steps
     for t0,t1 in zip(tp[:-1],tp[1:]):          
         # predictor gradient
-        dpdt1 = p_lpm(pm[-1]-p[0], t0, a, b, p0, p1)
+        dpdt1 = p_lpm(pm[-1]-p[0], t0, a, b, p0, p1, testing = testing)
         # predictor step
         pp = pm[-1] + dpdt1*(t1-t0)
         # corrector gradient             
-        dpdt2 = p_lpm(pp-p[0], t1, a, b, p0, p1)
+        dpdt2 = p_lpm(pp-p[0], t1, a, b, p0, p1, testing = testing)
         # corrector step       
         pm.append(pm[-1] + 0.5*(t1-t0)*(dpdt2+dpdt1))
     
