@@ -6,6 +6,21 @@ import data_prep_functions as dpf
 
 
 def plot_pressure_benchmark():
+    ''' Plots the benchmark of the pressure lpm against an analytical solution
+
+        Parameters:
+        ----------
+        None
+
+        Returns:
+        --------
+        None
+
+        Notes:
+        This will output a plot to the screen where a plot of the numerical and analytical solution is overlayed on top
+        dotted broken line is numerical and solid blue line is analytical.
+
+    '''
     #analytical solution obtained via wolfram, parameters are as follows:
     #a = 1, q = 2, b = 3, P0 = 4, P1 = 5 and P(0) = 1
     n=100
@@ -15,6 +30,7 @@ def plot_pressure_benchmark():
     numerical = ls.solve_p_lpm(t, 1, 3, 4, 5, testing = [True, t, [1], np.full(n, 2)])
 
     f, ax = plt.subplots(1, 1)
+<<<<<<< HEAD
     ax.plot(t, numerical, 'k-o', label='Numerical')
     ax.plot(t, analytical, 'b', label='Analytical')
     ax.legend(prop={'size':14})
@@ -22,26 +38,54 @@ def plot_pressure_benchmark():
     f.suptitle("Comparison of analytical and numerical solutions to pressure LPM")
     
     save_figure = True
+=======
+    ax.plot(t, numerical, 'k--')
+    ax.plot(t, analytical, 'b')
+    ax.set_title('pressure analytical vs numerical')
+    
+    save_figure = False
+>>>>>>> 2a9abb3d20cfaf3c620ef60e0fcab173f3228bd1
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
     else:
         #Save that plot to a png file
+<<<<<<< HEAD
         plt.savefig('pressure_benchmark.png',dpi=300)
+=======
+        plt.savefig('pressure analytical vs numerical',dpi=300)
+>>>>>>> 2a9abb3d20cfaf3c620ef60e0fcab173f3228bd1
 
 
 
 
 def plot_conc_benchmark():
+    ''' Plots the benchmark of the concentration lpm against an analytical solution
+
+        Parameters:
+        ----------
+        None
+
+        Returns:
+        --------
+        None
+
+        Notes:
+        This will output a plot to the screen where a plot of the numerical and analytical solution is overlayed on top
+        dotted broken line is numerical and solid blue line is analytical.
+
+    '''
     #analytical solution obtained via wolfram, parameters are as follows:
     #a = 1, b = 3, P0 = 4, P1 = 5, P = 6, d = 7, Csrc = 1, C(0)=1, M0=3
     n=100
     t = np.linspace(0, 5, num=n)
     analytical = 3.5-2.5*np.exp(t)
 
+    #obtain numerical solution for conc lpm
     numerical = ls.solve_c_lpm(t, 1, 3, 4, 5, 7, 3, 1, testing = [True, t, [1], np.full(n, 6)])
 
     f, ax = plt.subplots(1, 1)
+<<<<<<< HEAD
     ax.plot(t, numerical, 'k-o', label='Numerical')
     ax.plot(t, analytical, 'b', label='Analytical')
     ax.legend(loc='lower left', prop={'size':14})
@@ -49,13 +93,25 @@ def plot_conc_benchmark():
     f.suptitle("Comparison of analytical and numerical solutions to concentration LPM")
     
     save_figure = True
+=======
+    ax.plot(t, numerical, 'k--')
+    ax.plot(t, analytical, 'b') 
+    ax.set_title('concentration analytical vs numerical')
+
+    save_figure = False
+>>>>>>> 2a9abb3d20cfaf3c620ef60e0fcab173f3228bd1
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
     else:
         #Save that plot to a png file
+<<<<<<< HEAD
         plt.savefig('conc_benchmark.png',dpi=300)
 
+=======
+        plt.savefig('concentration analytical vs numerical',dpi=300)
+   
+>>>>>>> 2a9abb3d20cfaf3c620ef60e0fcab173f3228bd1
     
 
 
