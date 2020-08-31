@@ -288,4 +288,4 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrapolate=None, level=N
         cm.append(cm[-1] + 0.5*(t1-t0)*(dcdt2+dcdt1))
     
     #interp onto requested times
-    return np.interp(t, tc, cm)                   
+    return np.interp(t, tc, cm)                 

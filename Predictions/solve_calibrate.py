@@ -101,23 +101,28 @@ def conc_lpm_predict(pm,tp,pressure_pars,levels):
     pars = np.append(pressure_pars,pars[4:])
     
     
-    t=[]
     cm=[]
     for i in range(len(tp)):
         # get and store the best solutions
         cmi = solve_c_lpm(tp[i],*pars, extrapolate=tp[i], level=levels[i])
         cm.append(cmi)
-        t.append(tp[i])
 
-
+    
     f,ax = plt.subplots(1,1,figsize=(12,8))
     ax.plot(tc, c, 'ro', label = 'observations')
 
     for i in range(len(levels)):
         ax.plot(tp[i], cm[i], label='q={:3.1f} megalitres/day'.format(levels[i]))
+    
+    #solve for the historical data as well
+    ch = solve_c_lpm(np.linspace(1980,2015,100), *pars, extrapolate=np.linspace(1980,2016,100), level=0)
+    ax.plot(np.linspace(1980,2015,100), ch, 'k-', label='best-fit model')
+
+    #plot maximum safety limit 1.76mg/L (no safety factor)
+    ax.axhline(1.76e-6, color='y', linestyle='--', label='Maximum potable copper conc')
 
     ax.set_ylabel("concentration [mass fraction]",size=14); ax.set_xlabel("time[year]",size=14)
-    ax.legend(prop={'size':14})
+    ax.legend(prop={'size':11})
     ax.set_title('d={:2.1e}, $M_0$={:2.1e} kg, $Csrc$={:2.1e} mg/L'.format(*pars[4:]),size=14)
     ax.text(2030,0.0000000,'Model also uses constants\n from calibrated pressure LPM:\n $a=${:3.3f},\n $b=${:3.3f},\n $P_0$={:3.3f} MPa,\n $P_1$={:3.3f}MPa'.format(*pars[0:4]),size=12)
     f.suptitle("Solutions to copper concentration LPM for various extraction levels",size=15)
