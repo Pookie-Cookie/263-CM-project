@@ -64,5 +64,11 @@ def test_solve_c_lpm():
         print("solve_c_lpm is working fine")
     except(AssertionError):
         print("solve_c_lpm isnt working right")
-        
-test_solve_c_lpm()
+
+if __name__ == "__main__":
+    test_extraction_unit_conversion()
+    test_conc_unit_convert()
+    test_p_lpm()
+    test_solve_p_lpm()
+    test_c_lpm()    
+    test_solve_c_lpm()
