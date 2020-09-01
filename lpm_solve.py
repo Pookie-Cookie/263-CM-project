@@ -47,7 +47,7 @@ def p_lpm(p,t,a,b,p0,p1, testing = None):
     return -a*q-b*(p-p0)-b*(p-p1)
 
 # implement an imporved Euler step to solve the ODE
-def solve_p_lpm(t,a,b,p0,p1, testing = None):
+def solve_p_lpm(t,a,b,p0,p1, testing = None, extrap=None):
     ''' Solve an ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -64,7 +64,8 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None):
             high pressure boundary pressure parameter.   
         testing : Bool/array like
             whether we are testing the function or want actual outputs.
-
+        extrap : array-like(optional)
+            Contains time for which solution is wanted - can be within or outside data range
         Returns:
         --------
         p_soln : array-like
@@ -81,6 +82,11 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None):
         The first element is Bool (F for not testing), then we want the 
         testing times as an array and then the training data pressure as an array.
 
+        Note that parameter t is essential for curve fitting etc., but
+        when trying to solve the ODE for known parameters and a desired range
+        and spacing, should input this desired time evaluation into BOTH t and extrap
+
+
         Assume that ODE function f takes the following inputs, in order:
             1. dependent variable
             2. independent variable
@@ -89,13 +95,15 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None):
     if testing != None:
         tp = testing[1]
         p = testing[2]
-        pm = [p[0], ]
     else:
         # load pressure data - to get the initial value
         tp,p = load_pressures()
-        # initial value
-        pm = [p[0],]                            
-        # solve at pressure steps
+        if extrap is not None:
+            tp=extrap
+    
+    # initial value
+    pm = [p[0],]                            
+    # solve at pressure steps
     for t0,t1 in zip(tp[:-1],tp[1:]):          
         # predictor gradient
         dpdt1 = p_lpm(pm[-1], t0, a, b, p0, p1, testing = testing)
@@ -207,7 +215,7 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
     return mdcdt/m0
 
 # implement an improved Euler step to solve the ODE
-def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None):
+def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrap=None):
     ''' Solve the conc ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -227,7 +235,12 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None):
         m0 : float
             total aquifer mass parameter. 
         csrc : float
-            surface leaching stormwater concentration parameter.   
+            surface leaching stormwater concentration parameter.
+        testing : array-like(optional)
+            Each element contains times, ICs etc. to test
+        extrap : array-like(optional)
+            Contains times for which solution is wanted - can be within or outside data range
+
 
         Returns:
         --------
@@ -248,6 +261,8 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None):
         tc,c = load_concs()
         # convert to mass fraction
         c = conc_unit_convert(c)
+        if extrap is not None:
+            tc = extrap
     else:
         tc = testing[1]
         c = testing[2]

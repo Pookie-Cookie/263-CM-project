@@ -44,12 +44,17 @@ def test_p_lpm():
         
 def test_solve_p_lpm():
     try: 
+<<<<<<< HEAD
         assert(norm(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011, 0.03129011, 0.03129011, 0.03129011, 0.03129011]) < 0.001)
+=======
+        assert(np.linalg.norm(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011, 0.03129011, 0.03129011, 0.03129011, 0.03129011]) < 0.001)
+>>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
         print("function appears to be working fine")
     except(AssertionError):
         print("something wrong with the pressure ODE numerical solver")
 
 
+<<<<<<< HEAD
 def test_c_lpm():
     try:
         assert(ls.c_lpm(0, 1, 2, 3, 4, 5, 6, 7, 8)-30.643 < 0.001)
@@ -66,3 +71,11 @@ def test_solve_c_lpm():
         print("solve_c_lpm isnt working right")
         
 test_solve_c_lpm()
+=======
+if __name__ == "__main__":
+    test_extraction_unit_conversion()
+    test_conc_unit_convert()
+    test_p_lpm()
+    test_solve_p_lpm()
+        
+>>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
