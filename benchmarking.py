@@ -32,13 +32,6 @@ def plot_pressure_benchmark():
 
     #plot
     f, ax = plt.subplots(1, 1)
-<<<<<<< HEAD
-    ax.plot(t, numerical, 'k--')
-    ax.plot(t, analytical, 'b')
-    ax.set_title('pressure analytical vs numerical')
-    
-    save_figure = False
-=======
     ax.plot(t, numerical, 'k-o', label='Numerical')
     ax.plot(t, analytical, 'b', label='Analytical')
     ax.legend(prop={'size':14})
@@ -46,17 +39,12 @@ def plot_pressure_benchmark():
     f.suptitle("Comparison of analytical and numerical solutions to pressure LPM")
     
     save_figure = True
->>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
     else:
         #Save that plot to a png file
-<<<<<<< HEAD
-        plt.savefig('pressure analytical vs numerical',dpi=300)
-=======
         plt.savefig('pressure_benchmark.png',dpi=300)
->>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
 
 
 
@@ -88,13 +76,6 @@ def plot_conc_benchmark():
 
     #plot
     f, ax = plt.subplots(1, 1)
-<<<<<<< HEAD
-    ax.plot(t, numerical, 'k--')
-    ax.plot(t, analytical, 'b') 
-    ax.set_title('concentration analytical vs numerical')
-
-    save_figure = False
-=======
     ax.plot(t, numerical, 'k-o', label='Numerical')
     ax.plot(t, analytical, 'b', label='Analytical')
     ax.legend(loc='lower left', prop={'size':14})
@@ -102,19 +83,13 @@ def plot_conc_benchmark():
     f.suptitle("Comparison of analytical and numerical solutions to concentration LPM")
     
     save_figure = True
->>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
     else:
         #Save that plot to a png file
-<<<<<<< HEAD
-        plt.savefig('concentration analytical vs numerical',dpi=300)
-   
-=======
         plt.savefig('conc_benchmark.png',dpi=300)
 
->>>>>>> 83e3a5632ff784f156c7e05f2817acdc7593e117
     
 
 

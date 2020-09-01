@@ -59,8 +59,10 @@ def test_c_lpm():
 
 def test_solve_c_lpm():
     try:
-        assert(norm(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7) - [0, 0, 0, 0, 0]) < 0.001)
+        print(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7, extrap=[1, 2, 3, 4, 5]))
+        assert(norm(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7, extrap=[1, 2, 3, 4, 5]) - [0, -3.161, -7.465, -13.3231, -21.298]) < 0.001)
         print("solve_c_lpm is working fine")
     except(AssertionError):
         print("solve_c_lpm isnt working right")
         
+test_solve_c_lpm()
