@@ -2,6 +2,7 @@ import solve_calibrate as sc
 import data_prep_functions as dpf
 import numpy as np
 import lpm_solve as ls
+from scipy.linalg import norm
 
 
 def test_extraction_unit_conversion():
@@ -43,8 +44,25 @@ def test_p_lpm():
         
 def test_solve_p_lpm():
     try: 
-        assert(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011 0.03129011 0.03129011 0.03129011 0.03129011] < 0.001)
+        assert(norm(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011, 0.03129011, 0.03129011, 0.03129011, 0.03129011]) < 0.001)
         print("function appears to be working fine")
     except(AssertionError):
         print("something wrong with the pressure ODE numerical solver")
+
+
+def test_c_lpm():
+    try:
+        assert(ls.c_lpm(0, 1, 2, 3, 4, 5, 6, 7, 8)-30.643 < 0.001)
+        print("c_lpm is working fine")
+    except(AssertionError):
+        print("c_lpm isnt right")
+
+def test_solve_c_lpm():
+    try:
+        print(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 40, 5, 6, 7))
+        assert(norm(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7) - [0, 0, 0, 0, 0]) < 0.001)
+        print("solve_c_lpm is working fine")
+    except(AssertionError):
+        print("solve_c_lpm isnt working right")
         
+test_solve_c_lpm()
