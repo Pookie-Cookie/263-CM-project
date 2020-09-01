@@ -10,14 +10,16 @@ def test_extraction_unit_conversion():
     try:
         assert(dpf.extraction_unit_convert(1) - 2.739726027e-3 < 0.001)
     except(AssertionError):
-        print("extraction_unit_conversion function from data prep functions aint right")
+        print("extraction_unit_convert TEST FAIL")
 
     #test np arrays
     try:
         input = np.array([1, 1, 0, 20])
         assert(np.linalg.norm(dpf.extraction_unit_convert(input) - [2.739726027e-3, 2.739726027e-3, 0, 0.05479452055]) < 0.001)
+        print("extraction_unit_convert TEST OK")
     except(AssertionError):
-        print("extraction_unit_conversion function from data prep functions has problems with np arrays")      
+        print("extraction_unit_convert TEST FAIL")
+          
 
 
 def test_conc_unit_convert():
@@ -25,45 +27,45 @@ def test_conc_unit_convert():
     try:
         assert(dpf.conc_unit_convert(1) - 1.e-6 < 0.001)
     except(AssertionError):
-        print("data_prep_functions conc_unit_convert function not right")
+        print("conc_unit_convert       TEST FAIL")
     
     #test array input
     try:
         input = np.array([1, 0, 2, 1])
         assert(np.linalg.norm(dpf.conc_unit_convert(input) - [1.e-6, 0, 2.e-6, 1.e-6]) < 0.001)
+        print("conc_unit_convert       TEST OK")
     except (AssertionError):
-        print("data_prep_functions conc_unit_convert function not right with array inputs")
+        print("conc_unit_convert       TEST FAIL")
 
 
 def test_p_lpm():
     try:
         assert(ls.p_lpm(0, 1, 2, 3, 4, 5)-30 < 0.001)
-        print("alg here")
+        print("p_lpm                   TEST OK")
     except(AssertionError):
-        print("p_lpm isnt right")
+        print("p_lpm                   TEST FAIL")
         
 def test_solve_p_lpm():
     try: 
         assert(norm(ls.solve_p_lpm([1, 2, 3, 4, 5],1,2,20,40)-[0.03129011, 0.03129011, 0.03129011, 0.03129011, 0.03129011]) < 0.001)
-        print("function appears to be working fine")
+        print("solve_p_lpm             TEST OK")
     except(AssertionError):
-        print("something wrong with the pressure ODE numerical solver")
+        print("solve_p_lpm             TEST FAIL")
 
 
 def test_c_lpm():
     try:
         assert(ls.c_lpm(0, 1, 2, 3, 4, 5, 6, 7, 8)-30.643 < 0.001)
-        print("c_lpm is working fine")
+        print("c_lpm                   TEST OK")
     except(AssertionError):
-        print("c_lpm isnt right")
+        print("c_lpm                   TEST FAIL")
 
 def test_solve_c_lpm():
     try:
-        print(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7, extrap=[1, 2, 3, 4, 5]))
         assert(norm(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7, extrap=[1, 2, 3, 4, 5]) - [0, -3.161, -7.465, -13.3231, -21.298]) < 0.001)
-        print("solve_c_lpm is working fine")
+        print("solve_c_lpm             TEST OK")
     except(AssertionError):
-        print("solve_c_lpm isnt working right")
+        print("solve_c_lpm             TEST FAIL")
 
 if __name__ == "__main__":
     test_extraction_unit_conversion()
