@@ -1,0 +1,97 @@
+def pressure_lpm_predict(level, endyear):
+    ''' Solves the pressure LPM for different possible extraction rates, saving them to csv files
+
+        Parameters
+        ----------
+        level : array-like
+            Volume rates of extraction to predict for
+        
+        endyear : int
+            The year up to which extrapolations should be made
+
+        Returns
+        -------
+        pm : array-like
+            Vector containing solutions to pressure LPM at times tp under different extractions
+        tp : array-like
+            Vector containing times for which pressure LPM is solved under different extractions
+        pars : array-like
+            Vector containing parameters a,b,p0,p1 for which the LPM best fits the data
+
+        Notes
+        -----
+        Must be called before attempting to run conc_lpm_predict.
+    '''
+    # load pressure data
+    tp,p = load_pressures()
+    
+    #set error
+    v=0.001
+    # get deviation vector
+    sigma = [v]*len(tp)
+
+    # use CURVE_FIT to find "best" model
+    from scipy.optimize import curve_fit
+    pars, cov = curve_fit(solve_p_lpm, tp, p, [0.005,0.005,-0.005,0.005], sigma = sigma)
+
+    pm=[]
+    tq=[]
+    for i in range(len(level)):
+        p_level=[]
+        t_level=[]
+        # change the pressure data to contain future levels of extraction
+        tqi, q = future_extraction_rates(level[i], endyear)
+        
+        pars_s = np.random.multivariate_normal(pars, cov, 20)   # samples from posterior
+        # get the best solutions for each level
+        for par in pars_s:
+            pmi = solve_p_lpm(tqi,*par, extrapolate=tqi)
+            p_level.append(pmi)
+            t_level.append(tqi)
+
+        
+        pm.append(p_level)
+        tq.append(t_level)
+
+        
+    f,ax = plt.subplots(1,1,figsize=(12,8))
+    #plot data with error bars
+    ax.plot(tp, p, 'ro', label = 'observations')
+    for tpi,pi in zip(tp,p):
+        ax.plot([tpi,tpi],[pi-v,pi+v], 'r-', lw=0.5)
+
+
+    colours=['r', 'b', 'y', 'g']
+    for i in range(len(tq)):
+        # colour each set of possible extractions different colours
+        colour=colours[i]
+        # use separate command for extrap labels - to simply add them to the legend
+        ax.plot([],[], '{}'.format(colour) ,label='q={:3.1f} megalitres/day'.format(level[i]))
+        
+
+        p_level=pm[i]
+        t_level=tq[i]
+        for j in range(len(t_level)):
+            ax.plot(t_level[j][:38], p_level[j][:38], 'k', lw=0.5, alpha=0.6) # first 38 data values are historical data so can plot in black 
+            ax.plot(t_level[j][37:], p_level[j][37:], '{}'.format(colour), lw=0.5, alpha=0.4)
+    
+    # separate command for best-fit legend
+    ax.plot([],[], 'k' ,label='best-fit model')
+
+    ax.set_ylabel("Pressure [MPa]",size=14); ax.set_xlabel("time[year]",size=14)
+    ax.legend(prop={'size':11})
+
+    ax.set_title('a={:2.1e},   b={:2.1e},   P0={:2.1e},  P1={:2.1e}'.format(pars[0],pars[1],pars[2],pars[3]),size=14)
+    f.suptitle("Variation in pressure LPM solution for various extraction levels (error in data={:2.1e})".format(v),size=15)
+    
+    save_figure = False
+    if not save_figure:
+        #Open a new window and display the plot
+        plt.show()
+    else:
+        #Save that plot to a png file
+        plt.savefig('pressure_uncertainty.png',dpi=300)
+    
+
+
+    return pm, tq, pars
