@@ -1,5 +1,6 @@
-# Run this file to generate all the plots associated with Group 10's reports.
-# Please set any plotting functions inputs to true to save the plot to disk.
+# Run this file to generate all the plots associated with Group 10's reports and other submissions
+# for the ENGSCI 263 CM Project, S2 2020.
+# Please set any plotting functions 'save' inputs to 'True' to save the plot to disk.
 
 #IMPORTS
 from data_describe_functions import *
@@ -64,3 +65,11 @@ for level in levels:
     else:
         print("The file does not exist")
 
+# TROUBLESHOOTING
+
+#To look at the plots again, please ensure main.py runs to the very end and is not interrupted.
+
+#- If debugging mode is used and only part of the plots are generated, then on the subsequent run, the plots will not correspond to those shown in our reports.
+#  The plots should still all be generated but the shapes of some will be different to those in our reports.
+#- Please ensure that main.py runs to the very end on this subsequent run. This will reset data files in the working directory to their original, desired configuration.
+#  Then, on the third run, all plots should display correctly.
