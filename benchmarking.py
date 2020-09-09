@@ -5,12 +5,13 @@ from matplotlib import pyplot as plt
 import data_prep_functions as dpf
 
 
-def plot_pressure_benchmark():
+def plot_pressure_benchmark(save):
     ''' Plots the benchmark of the pressure lpm against an analytical solution
 
         Parameters:
         ----------
-        None
+        save : Bool
+			If set to true, save BOTH figures generated to working directory
 
         Returns:
         --------
@@ -38,7 +39,7 @@ def plot_pressure_benchmark():
     ax.set_title('a = 1, b = 3, $P_0$ = 4, $P_1$ = 5, $P(0)$ = 1, and $q$ = 2 [held constant]')
     f.suptitle("Comparison of analytical and numerical solutions to pressure LPM")
     
-    save_figure = True
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -49,12 +50,13 @@ def plot_pressure_benchmark():
 
 
 
-def plot_conc_benchmark():
+def plot_conc_benchmark(save):
     ''' Plots the benchmark of the concentration lpm against an analytical solution
 
         Parameters:
         ----------
-        None
+		save : Bool
+			If set to true, save figure generated to working directory
 
         Returns:
         --------
@@ -82,7 +84,7 @@ def plot_conc_benchmark():
     ax.set_title('a = 1, b = 3, $P_0$ = 4, $P_1$ = 5, d = 7, $M_0$=3, $C_{src}$ = 1, C(0)=1, and $P$ = 6 [held constant]',size=10)
     f.suptitle("Comparison of analytical and numerical solutions to concentration LPM")
     
-    save_figure = True
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -96,7 +98,8 @@ def plot_conc_benchmark():
     
 
 
-
+'''
 if __name__ == "__main__":
     #plot_pressure_benchmark()
     plot_conc_benchmark()
+'''

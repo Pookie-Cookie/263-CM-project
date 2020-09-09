@@ -38,6 +38,75 @@ def load_extraction_rates():
 
     return t,Q
 
+def future_extraction_rates(level, endyear):
+    ''' Returns time and extraction measurements for historical and future data
+
+        Parameters:
+        -----------
+        level : float
+            The volume rate of extraction for the duration after
+        
+        endyear : int
+            The year up to which data should be made
+
+        Returns:
+        --------
+        t : array-like
+            Vector of times (years) at which data is available
+        Q : array-like
+            Vector of extraction rates.
+
+        Notes:
+        ------
+        The file name of file containing the data is hard coded inside this function.
+        The function first loads historical data, writes these and the future level of extraction
+        and the future times to csv file, then reads the file and returns these. 
+    '''
+    th, qh = load_extraction_rates()
+    historical = np.column_stack((th, qh))
+    #save the pressure solution to a .txt file
+    # opening a file
+    fp = open('ac_q.csv','w')
+    #write header
+    fp.write('t[year], q[10^6 litres/day]\n')
+    #enter historical extraction data
+    [fp.write('{:f}, {:f}\n'.format(t,q)) for t, q in historical[:39]]
+
+    #enter future extraction data with same spacing as historical data
+    tq = np.arange(th[38]+(th[38]-th[37]), endyear, th[38]-th[37])
+    q=np.full(len(tq), fill_value=level)
+    [fp.write('{:f}, {:f}\n'.format(t,q)) for t, q in np.column_stack((tq, q))]
+    
+    fp.close()
+
+    #read data in from csv
+    data=np.genfromtxt(fname="ac_q.csv",delimiter=',',skip_header=True)
+    #first col - time vals, second col - temp. vals
+    t=data[:,0]
+    Q=data[:,1]
+
+    return t,Q
+
+def q_reset():
+    ''' Removes future/extrapolated data and restores data in ac_q.csv to historical data only
+        Parameters:
+        -----------
+        None
+        
+        Returns:
+        --------
+        None
+    '''
+    # read data in from csv
+    historical = np.genfromtxt(fname="ac_q.csv",delimiter=',',skip_header=True)
+    # only write historical data back into csv
+    # opening the same file again
+    fp = open('ac_q.csv','w')
+    #write header
+    fp.write('t[year], q[10^6 litres/day]\n')
+    #enter historical extraction data
+    [fp.write('{:f}, {:f}\n'.format(t,q)) for t, q in historical[:39]]
+
 def load_pressures():
     ''' Returns time and pressure measurements from pressure csv file.
 
@@ -91,6 +160,34 @@ def load_p_lpm_solution():
 
     return t,p
 
+def load_p_extrap_soln(level):
+    ''' Returns time and pressure measurements for a predicted solution to pressure lpm stored in .txt file.
+
+        Parameters:
+        -----------
+        level : float
+            the level of future extraction being modelled.
+
+        Returns:
+        --------
+        t : array-like
+            Vector of times (years) at which measurements were taken.
+        p : array-like
+            Vector of pressure measurements.
+
+        Notes:
+        ------
+        The file name of file containing the data is hard coded inside this function,
+        and must be of the form p_lpm_q_n.txt, where n=level of extraction
+        This is used to pass in the pressure solution to the concentration LPM functions
+    '''
+    
+    data=np.genfromtxt(fname="p_soln_q_{:d}.txt".format(level),delimiter=',', skip_header=True)
+    #first col - time vals, second col - temp. vals
+    t=data[:,0]
+    p=data[:,1]
+
+    return t,p
 
 def load_concs():
     ''' Returns time and conc measurements from conc csv file.
@@ -118,30 +215,6 @@ def load_concs():
 
     return t,C
 
-def interpolate_forcer_linker(t,tv,qv):
-    ''' Return forcing or linking variable q or p for Onehunga Aquifer.
-
-        Parameters:
-        -----------
-        t : array-like
-            Vector of times at which to interpolate the variable.
-        tv : array-like
-            Vector of times for which the variable is known.
-        qv : array-like
-            Vector of known values for variable.
-
-        Returns:
-        --------
-        q : array-like
-            Extraction rate (megalitres/day) or pressure[MPa] interpolated at t.
-
-        Notes:
-        ------
-        Spline interpolation is used to interpolate the data
-    '''
-    q_splines=interp1d(tv,qv,kind='cubic')
-    #interp1d creates a function which can be fed interpolation points stored in t
-    return q_splines(t)
 
 #############################################################################################
 #UNIT CONVERTERS

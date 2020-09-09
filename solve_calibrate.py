@@ -2,12 +2,13 @@ from data_prep_functions import *
 from lpm_solve import *
 from matplotlib import pyplot as plt
 
-def pressure_lpm_model():
-    ''' Solves the pressure LPM and displays solution before saving it to a csv file.
+def pressure_lpm_model(save):
+    ''' Solves the pressure LPM and displays solution and data misfit
 
         Parameters
         ----------
-        None
+		save : Bool
+			If set to true, save both figures generated to working directory
 
         Returns
         -------
@@ -21,7 +22,7 @@ def pressure_lpm_model():
         Notes
         -----
         Saves a csv file containing the solution and solution times to the working directory.
-        Must be called before attempting to run conc_lpm_model.
+        MUST be called before attempting to run conc_lpm_model.
     '''
     # load pressure data - to calibrate parameters
     tp,p = load_pressures()
@@ -33,16 +34,16 @@ def pressure_lpm_model():
     tq, q = load_extraction_rates()
 
     # plot the best solution
-    pm = solve_p_lpm(tq,*pars, extrap=tq)
-    f,ax = plt.subplots(1,1,figsize=(12,8))
+    pm = solve_p_lpm(tq,*pars, extrapolate=tq)
+    f,ax = plt.subplots(1,1, constrained_layout=True)
     ax.plot(tp, p, 'ro', label = 'observations')
     ax.plot(tq, pm, 'k-', label='model')
     ax.set_ylabel("pressure [MPa]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
     ax.set_title('a={:2.1e},   b={:2.1e},   P0={:2.1e},  P1={:2.1e}'.format(pars[0],pars[1],pars[2],pars[3]),size=14)
-    f.suptitle("Comparison between pressure LPM and data for the Onehunga Aquifer",size=15)
-    
-    save_figure = True
+    f.suptitle("Best-fit pressure LPM",size=15)
+
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -60,7 +61,7 @@ def pressure_lpm_model():
     fp.write('t[year], P[MPa]\n')
     #enter pressure solution data
     [fp.write('{:f}, {:f}\n'.format(t,p)) for t, p in pressure_soln]  
-
+    fp.close()
     # get model values for times common to data and model
     pmis=[]
     for i in range(len(tp)):
@@ -69,16 +70,15 @@ def pressure_lpm_model():
                 pmis.append(pm[j])
 
     misfit = pmis-p #should have length tp
-    f, ax = plt.subplots(1, 1)
+    f, ax = plt.subplots(1, 1, constrained_layout=True)
     ax.plot(tp, misfit, 'ko', label='misfit(Mpa)')
     ax.plot(tp, np.zeros(np.size(tp)), 'k--', label='baseline 0')
-    ax.set_title('Pressure misfit plot')
-    ax.set_ylabel('pressure misfit [MPa]')
-    ax.set_xlabel('time[year]')
-    plt.tight_layout()
+    ax.set_title('Pressure misfit plot',size=15)
+    ax.set_ylabel('pressure misfit [MPa]',size=14)
+    ax.set_xlabel('time[year]',size=14)
 
 
-    save_figure = True
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -88,8 +88,8 @@ def pressure_lpm_model():
 
     return pm, tp, pars
 
-def conc_lpm_model(pm,tp,pressure_pars):
-    ''' Solves the conc LPM and displays solution.
+def conc_lpm_model(pm,tp,pressure_pars,save):
+    ''' Solves the conc LPM and displays solution and misfit from data
 
         Parameters
         ----------
@@ -98,7 +98,9 @@ def conc_lpm_model(pm,tp,pressure_pars):
         tp : array-like
             Vector containing times for which pressure LPM is solved
         pressure_pars : array-like
-            Vector containing parameters a,b,p0,p1 for which pressure LPM best fits pressure data 
+            Vector containing parameters a,b,p0,p1 for which pressure LPM best fits pressure data
+		save : Bool
+			If set to true, save both figures generated to working directory 
 
         Returns
         -------
@@ -130,17 +132,17 @@ def conc_lpm_model(pm,tp,pressure_pars):
     tq, q = load_extraction_rates()
     
     # plot the best solution
-    cm = solve_c_lpm(tq,*pars, extrap=tq)
-    f,ax = plt.subplots(1,1,figsize=(12,8))
+    cm = solve_c_lpm(tq,*pars, extrapolate=tq)
+    f,ax = plt.subplots(1,1, constrained_layout=True)
     ax.plot(tc, c, 'ro', label = 'observations')
     ax.plot(tq, cm, 'k-', label='model')
     ax.set_ylabel("concentration [mass fraction]",size=14); ax.set_xlabel("time[year]",size=14)
     ax.legend(prop={'size':14})
     ax.set_title('d={:2.1e}, $M_0$={:2.1e} kg, $Csrc$={:2.1e} mg/L'.format(*pars[4:]),size=14)
-    ax.text(2003,0.0000000,'Calibrated using the following constants\n obtained from calibrating pressure LPM:\n $a=${:3.3f},\n $b=${:3.3f},\n $P_0$={:3.3f} MPa,\n $P_1$={:3.3f}MPa'.format(*pars[0:4]),size=12)
-    f.suptitle("Comparison between copper concentration LPM and data for the Onehunga Aquifer",size=15)
-    
-    save_figure = True
+    ax.text(2000,0.0000000,'Uses constants from\n pressure LPM calibration:\n $a=${:3.3f},\n $b=${:3.3f},\n $P_0$={:3.3f} MPa,\n $P_1$={:3.3f}MPa'.format(*pars[0:4]),size=12)
+    f.suptitle("Best-fit copper concentration LPM",size=15)
+    #plt.tight_layout()
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -158,14 +160,14 @@ def conc_lpm_model(pm,tp,pressure_pars):
     
     #misfit should only have the same not of data pts as tc
     misfit = cmis-c
-    f, ax = plt.subplots(1, 1)
+    f, ax = plt.subplots(1, 1, constrained_layout=True)
     ax.plot(tc, misfit, 'ko', label='misfit[MPa]')
     ax.plot(tc, np.zeros(np.size(tc)), 'k--', label='baseline 0')
-    ax.set_title('Concentration misfit plot')
-    ax.set_ylabel('concentration misfit [Mass fraction]')
-    ax.set_xlabel('time[year]')
+    ax.set_title('Concentration misfit',size=15)
+    ax.set_ylabel('concentration misfit [Mass fraction]',size=14)
+    ax.set_xlabel('time[year]', size=14)
 
-    save_figure = True
+    save_figure = save
     if not save_figure:
         #Open a new window and display the plot
         plt.show()
@@ -174,7 +176,7 @@ def conc_lpm_model(pm,tp,pressure_pars):
         plt.savefig('conc_misfit.png',dpi=300)
 
 if __name__ == "__main__":
-    pm, tm, pars = pressure_lpm_model()
-    conc_lpm_model(pm,tm,pars)
+    pm, tm, pars = pressure_lpm_model(save=False)
+    conc_lpm_model(pm,tm,pars, save=False)
 
     

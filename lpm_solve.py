@@ -47,7 +47,7 @@ def p_lpm(p,t,a,b,p0,p1, testing = None):
     return -a*q-b*(p-p0)-b*(p-p1)
 
 # implement an imporved Euler step to solve the ODE
-def solve_p_lpm(t,a,b,p0,p1, testing = None, extrap=None):
+def solve_p_lpm(t,a,b,p0,p1, testing = None, extrapolate = None):
     ''' Solve an ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -62,10 +62,11 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None, extrap=None):
             low pressure boundary pressure parameter.
         p1 : float
             high pressure boundary pressure parameter.   
-        testing : Bool/array like
+        testing : array-like(optional)
             whether we are testing the function or want actual outputs.
-        extrap : array-like(optional)
-            Contains time for which solution is wanted - can be within or outside data range
+        extrapolate : array-like(optional)
+            array of times historical & future to find a solution for
+
         Returns:
         --------
         p_soln : array-like
@@ -77,15 +78,10 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None, extrap=None):
         A pressure csv file called ac_p.csv MUST be present in
         the working directory for this function to run. 
 
-        Testing should at most have 3 elements in it and the first 
+        testing should have 3 elements in it and the first 
         element determines if we are simply benchmarking the function or not.
         The first element is Bool (F for not testing), then we want the 
         testing times as an array and then the training data pressure as an array.
-
-        Note that parameter t is essential for curve fitting etc., but
-        when trying to solve the ODE for known parameters and a desired range
-        and spacing, should input this desired time evaluation into BOTH t and extrap
-
 
         Assume that ODE function f takes the following inputs, in order:
             1. dependent variable
@@ -95,15 +91,17 @@ def solve_p_lpm(t,a,b,p0,p1, testing = None, extrap=None):
     if testing != None:
         tp = testing[1]
         p = testing[2]
+        pm = [p[0], ]
     else:
         # load pressure data - to get the initial value
         tp,p = load_pressures()
-        if extrap is not None:
-            tp=extrap
-    
-    # initial value
-    pm = [p[0],]                            
-    # solve at pressure steps
+        # if extrapolation array is input, find solution going into future as well
+        if extrapolate is not None:
+            tp = np.copy(extrapolate)
+
+        # initial value
+        pm = [p[0],]                            
+        # solve at pressure steps
     for t0,t1 in zip(tp[:-1],tp[1:]):          
         # predictor gradient
         dpdt1 = p_lpm(pm[-1], t0, a, b, p0, p1, testing = testing)
@@ -156,7 +154,7 @@ def low_p_bound(c,p,p0):
         return 0
 
 # define derivative function
-def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
+def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None, level=None, solution = None):
     ''' Return the derivative dC/dt at time, t, for given parameters.
 
         Parameters:
@@ -178,7 +176,13 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
         m0 : float
             total aquifer mass parameter. 
         csrc : float
-            surface leaching stormwater concentration parameter.          
+            surface leaching stormwater concentration parameter.
+        testing : array-like(optional)
+            whether we are testing the function or want actual outputs.
+        level : float(optional)
+            the level of future extraction being modelled.
+        solution : array-like(optional)
+            solution to the pressure LPM          
         
         Returns:
         --------
@@ -201,6 +205,12 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
     if testing == None:       
         # interpolate pressure from solution 
         tp, pm = load_p_lpm_solution()
+        if level is not None:
+            tp, pm = load_p_extrap_soln(level)
+
+        if solution is not None:
+            tp = solution[0]
+            pm = solution[1]
            
     else:
         pm = testing[-1]
@@ -215,7 +225,7 @@ def c_lpm(c,t,a,b,p0,p1,d,m0,csrc, testing = None):
     return mdcdt/m0
 
 # implement an improved Euler step to solve the ODE
-def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrap=None):
+def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrapolate=None, level=None, solution=None):
     ''' Solve the conc ODE numerically for the Onehunga Aquifer system
 
         Parameters:
@@ -237,11 +247,11 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrap=None):
         csrc : float
             surface leaching stormwater concentration parameter.
         testing : array-like(optional)
-            Each element contains times, ICs etc. to test
-        extrap : array-like(optional)
-            Contains times for which solution is wanted - can be within or outside data range
-
-
+            whether we are testing the function or want actual outputs.           
+        extrapolate : array-like(optional)
+            array of times historical & future to find a solution for
+        level : float(optional)
+            the level of future extraction being modelled.
         Returns:
         --------
         c_soln : array-like
@@ -255,14 +265,19 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrap=None):
             1. dependent variable
             2. independent variable
             3. other parameters
+        If including extrapolate or level as inputs - must include both
     '''
     if testing == None:
         #load conc data - to get intial value
         tc,c = load_concs()
         # convert to mass fraction
         c = conc_unit_convert(c)
-        if extrap is not None:
-            tc = extrap
+        # time array to use if extrapolating
+        if extrapolate is not None:
+            tc=extrapolate
+        elif solution is not None:
+            tc=solution[0]
+
     else:
         tc = testing[1]
         c = testing[2]
@@ -272,13 +287,13 @@ def solve_c_lpm(t,a,b,p0,p1,d,m0,csrc, testing = None, extrap=None):
     # solve at conc steps                           
     for t0,t1 in zip(tc[:-1],tc[1:]):
         # predictor gradient
-        dcdt1 = c_lpm(cm[-1], t0, a, b, p0, p1, d, m0, csrc, testing)
+        dcdt1 = c_lpm(cm[-1], t0, a, b, p0, p1, d, m0, csrc, testing, level, solution)
         # predictor step
         cp = cm[-1] + dcdt1*(t1-t0)             
         # corrector gradient
-        dcdt2 = c_lpm(cp, t1, a, b, p0, p1, d, m0, csrc, testing)
+        dcdt2 = c_lpm(cp, t1, a, b, p0, p1, d, m0, csrc, testing, level, solution)
         # corrector step
         cm.append(cm[-1] + 0.5*(t1-t0)*(dcdt2+dcdt1))
     
     #interp onto requested times
-    return np.interp(t, tc, cm)                   
+    return np.interp(t, tc, cm)                 

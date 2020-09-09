@@ -5,7 +5,7 @@ import lpm_solve as ls
 from scipy.linalg import norm
 
 
-def test_extraction_unit_convert():
+def test_extraction_unit_conversion():
     #test basic conversion
     try:
         assert(dpf.extraction_unit_convert(1) - 2.739726027e-3 < 0.001)
@@ -55,20 +55,20 @@ def test_solve_p_lpm():
 
 def test_c_lpm():
     try:
-        assert(abs(ls.c_lpm(1, 0, 2, 3, 4, 5, 6, 7, 8, testing=[True, [0], [6]])-(-10.0714)) < 0.001)
+        assert(ls.c_lpm(0, 1, 2, 3, 4, 5, 6, 7, 8)-30.643 < 0.001)
         print("c_lpm                   TEST OK")
     except(AssertionError):
         print("c_lpm                   TEST FAIL")
 
 def test_solve_c_lpm():
     try:
-        assert(norm(ls.solve_c_lpm([0, 1, 2], 2, 3, 4, 5, 6, 7, 8, testing=[True, [0,1,2], [6,6,6]]) - [6, -3.964, -16.293]) < 0.001)
+        assert(norm(ls.solve_c_lpm([1, 2, 3, 4, 5], 1, 2, 3, 4, 5, 6, 7, extrap=[1, 2, 3, 4, 5]) - [0, -3.161, -7.465, -13.3231, -21.298]) < 0.001)
         print("solve_c_lpm             TEST OK")
     except(AssertionError):
         print("solve_c_lpm             TEST FAIL")
 
 if __name__ == "__main__":
-    test_extraction_unit_convert()
+    test_extraction_unit_conversion()
     test_conc_unit_convert()
     test_p_lpm()
     test_solve_p_lpm()
