@@ -4,7 +4,7 @@ This bitbucket repository contains files which produce plots and test functions 
 
 ## Getting started
 
-Download and unzip a local copy of this repository. Find the folder cm_project_263_group_10. Open this in Visual Studio Code or similar Python IDE.
+Download and unzip a local copy of this repository. Open this in Visual Studio Code or similar Python IDE.
 
 Open and run main.py.
 
