@@ -106,6 +106,7 @@ def q_reset():
     fp.write('t[year], q[10^6 litres/day]\n')
     #enter historical extraction data
     [fp.write('{:f}, {:f}\n'.format(t,q)) for t, q in historical[:39]]
+    fp.close()
 
 def load_pressures():
     ''' Returns time and pressure measurements from pressure csv file.
