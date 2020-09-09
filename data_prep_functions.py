@@ -3,7 +3,7 @@
 
 import numpy as np
 from scipy.interpolate import interp1d
-
+import os
 
 #############################################################################################
 #DATA LOADING
@@ -30,8 +30,11 @@ def load_extraction_rates():
         Forgotten how to load data from a file? Review datalab under Files/cm/
         engsci233 on the ENGSCI263 Canvas page.
     '''
+    address = os.path.abspath("ac_q.csv")
+    #address=os.getcwd()+os.sep()+"ac_q.csv"
     #read data in from csv
-    data=np.genfromtxt(fname="ac_q.csv",delimiter=',',skip_header=True)
+    data=np.genfromtxt(fname=address,delimiter=',',skip_header=True)
+
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     Q=data[:,1]
@@ -66,7 +69,8 @@ def future_extraction_rates(level, endyear):
     historical = np.column_stack((th, qh))
     #save the pressure solution to a .txt file
     # opening a file
-    fp = open('ac_q.csv','w')
+    address = os.path.abspath("ac_q.csv")
+    fp = open(address,'w')
     #write header
     fp.write('t[year], q[10^6 litres/day]\n')
     #enter historical extraction data
@@ -80,7 +84,7 @@ def future_extraction_rates(level, endyear):
     fp.close()
 
     #read data in from csv
-    data=np.genfromtxt(fname="ac_q.csv",delimiter=',',skip_header=True)
+    data=np.genfromtxt(fname=address,delimiter=',',skip_header=True)
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     Q=data[:,1]
@@ -97,11 +101,12 @@ def q_reset():
         --------
         None
     '''
+    address = os.path.abspath("ac_q.csv")
     # read data in from csv
-    historical = np.genfromtxt(fname="ac_q.csv",delimiter=',',skip_header=True)
+    historical = np.genfromtxt(fname=address,delimiter=',',skip_header=True)
     # only write historical data back into csv
     # opening the same file again
-    fp = open('ac_q.csv','w')
+    fp = open(address,'w')
     #write header
     fp.write('t[year], q[10^6 litres/day]\n')
     #enter historical extraction data
@@ -126,8 +131,9 @@ def load_pressures():
         ------
         The file name of file containing the data is hard coded inside this function.
     '''
+    address = os.path.abspath("ac_p.csv")
     #read data in from csv
-    data=np.genfromtxt(fname="ac_p.csv",delimiter=',',skip_header=True)
+    data=np.genfromtxt(fname=address,delimiter=',',skip_header=True)
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     P=data[:,1]
@@ -153,8 +159,8 @@ def load_p_lpm_solution():
         The file name of file containing the data is hard coded inside this function.
         This is used to pass in the pressure solution to the concentration LPM functions
     '''
-    
-    data=np.genfromtxt(fname="p_lpm_soln.txt",delimiter=',', skip_header=True)
+    address = os.path.abspath("p_lpm_soln.txt")
+    data=np.genfromtxt(fname=address,delimiter=',', skip_header=True)
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     p=data[:,1]
@@ -182,8 +188,8 @@ def load_p_extrap_soln(level):
         and must be of the form p_lpm_q_n.txt, where n=level of extraction
         This is used to pass in the pressure solution to the concentration LPM functions
     '''
-    
-    data=np.genfromtxt(fname="p_soln_q_{:d}.txt".format(level),delimiter=',', skip_header=True)
+    address = os.path.abspath("p_soln_q_{:d}.txt".format(level))
+    data=np.genfromtxt(fname=address,delimiter=',', skip_header=True)
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     p=data[:,1]
@@ -208,8 +214,9 @@ def load_concs():
         ------
         The file name of file containing the data is hard coded inside this function.
     '''
+    address = os.path.abspath("ac_cu.csv")
     #read data in from csv
-    data=np.genfromtxt(fname="ac_cu.csv",delimiter=',',skip_header=True)
+    data=np.genfromtxt(fname=address,delimiter=',',skip_header=True)
     #first col - time vals, second col - temp. vals
     t=data[:,0]
     C=data[:,1]
