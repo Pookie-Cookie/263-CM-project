@@ -223,6 +223,30 @@ def load_concs():
 
     return t,C
 
+def interpolate_forcer_linker(t,tv,qv):
+    ''' Return forcing or linking variable q or p for Onehunga Aquifer.
+
+        Parameters:
+        -----------
+        t : array-like
+            Vector of times at which to interpolate the variable.
+        tv : array-like
+            Vector of times for which the variable is known.
+        qv : array-like
+            Vector of known values for variable.
+
+        Returns:
+        --------
+        q : array-like
+            Extraction rate (megalitres/day) or pressure[MPa] interpolated at t.
+
+        Notes:
+        ------
+        Spline interpolation is used to interpolate the data
+    '''
+    q_splines=interp1d(tv,qv,kind='cubic')
+    #interp1d creates a function which can be fed interpolation points stored in t
+    return q_splines(t)
 
 #############################################################################################
 #UNIT CONVERTERS
