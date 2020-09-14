@@ -12,6 +12,8 @@ Open and run main.py.
 
 - In the terminal, some test messages from tests in tests.py should appear. These test functions in data_prep_functions.py and lpm_solve.py
 
+- Those files prefixed with "grad*" represent an initial implementation of the code for this problem which was subsequently discarded as slow to calibrate and difficult to debug. The plots generated appear in the 'Improve' section of our reports.
+
 ## Authors
 
 Daniel Xu, Tanishq Sharma, Henry Gann, Connor Roulston, Taiji Endo.
