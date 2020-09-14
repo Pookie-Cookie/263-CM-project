@@ -6,6 +6,7 @@
 from data_describe_functions import *
 from benchmarking import *
 from tests import *
+from grad_solve_calibrate import *
 from solve_calibrate import *
 from solve_predict import *
 
@@ -30,6 +31,11 @@ test_p_lpm()
 test_solve_p_lpm()
 test_c_lpm()    
 test_solve_c_lpm()
+
+# IMPROVE ?
+# calibration with a mixture of ad-hoc and gradient descent
+tv, pv, theta_better=plot_grad_pressure_model(save=False) # this takes a few minutes
+plot_grad_conc_model(tv, pv, theta_better,save=False)
 
 # SUITABLE ?
 # Calibrate the model to known data

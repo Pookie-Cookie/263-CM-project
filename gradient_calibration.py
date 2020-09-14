@@ -243,39 +243,39 @@ def conc_params(t0, t1, dt, x0, pv, tv, theta0):
     return theta_all[-1], conc_obj(t0, t1, dt, x0, pv, tv, theta_all[-1])
 
 
-    def rand_pressure_params(n, t0, t1, dt, x0, pv, tv, p_theta):
-        ''' Uses randomly-generated parameters to improve accuracy of calibration
-       
-            Parameters:
-            -----------
-            n : int
-                Number of gradient descent start points to test
-            t0 : float
-                Initial time of solution.
-            t1 : float
-                Final time of solution.
-            dt : float
-                Time step length.
-            x0 : float
-                Initial value of solution.
-            p_theta : array-like
-                Set of parameters a, b, p0, p1 which pressure LPM calibrated to
+def rand_pressure_params_conc(n, t0, t1, dt, x0, pv, tv, p_theta):
+    ''' Uses randomly-generated parameters to improve accuracy of calibration
+    
+        Parameters:
+        -----------
+        n : int
+            Number of gradient descent start points to test
+        t0 : float
+            Initial time of solution.
+        t1 : float
+            Final time of solution.
+        dt : float
+            Time step length.
+        x0 : float
+            Initial value of solution.
+        p_theta : array-like
+            Set of parameters a, b, p0, p1 which pressure LPM calibrated to
 
-            Returns:
-            --------
-            theta_better : array-like
-                Set of parameters for which pressure lpm objective function is lowest(of the start points tested)
-            s_better : float
-                Value of objective function for these parameters
-            
-            Notes:
-            ------
-            Random generation is set with a constant seed to ensure replicability
-            Random generation for parameters crsc set between 0 and 5mg/L
-            and for d, m0 between 10^8 and 10^11. These ranges are based on data in ac_cu.csv
-            and on values obtained through ad-hoc calibration.
-            n should be set to a value 40 or less to obtain parameters in a reasonable time.
-        '''
+        Returns:
+        --------
+        theta_better : array-like
+            Set of parameters for which pressure lpm objective function is lowest(of the start points tested)
+        s_better : float
+            Value of objective function for these parameters
+        
+        Notes:
+        ------
+        Random generation is set with a constant seed to ensure replicability
+        Random generation for parameters crsc set between 0 and 5mg/L
+        and for d, m0 between 10^8 and 10^11. These ranges are based on data in ac_cu.csv
+        and on values obtained through ad-hoc calibration.
+        n should be set to a value 40 or less to obtain parameters in a reasonable time.
+    '''
     #keep seed constant
     seed(1)
     #generate first starting pt params
@@ -283,9 +283,14 @@ def conc_params(t0, t1, dt, x0, pv, tv, theta0):
     m0=1.e8+random()*99.e9
     #Since conc unlikely to be above 5mg/L
     csrc=0+random()*5.e-6
+    theta0=p_theta.append([d, m0, csrc])
+    #theta0=p_theta
+    theta_start, s_start=conc_params(t0, t1, dt, x0, pv, tv, theta0)
 
-    theta0=p_theta.extend([d, m0, crsc])
-    theta_better, s_better=conc_params(t0, t1, dt, x0, pv, tv, theta0)
+    a=p_theta[0]
+    b=p_theta[1]
+    p0=p_theta[2]
+    p1=p_theta[3]
 
     for i in range(n):
         d=1.e8+random()*99.e9
@@ -293,7 +298,7 @@ def conc_params(t0, t1, dt, x0, pv, tv, theta0):
         #Since conc unlikely to be above 5mg/L
         csrc=0+random()*5.e-6
 
-        theta0=np.array([a,b,p0,p1,d,m0,crsc])
+        theta0=np.array([a,b,p0,p1,d,m0,csrc])
         theta_better, s_better=conc_params(t0, t1, dt, x0, pv, tv, theta0)
 
         if (s_better<s_start):
